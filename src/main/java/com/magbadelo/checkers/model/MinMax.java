@@ -1,0 +1,29 @@
+package com.magbadelo.checkers.model;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class MinMax {
+
+    public int minimax(CheckersState currentState, int depth, boolean isMaxPlayer) {
+        if (depth == 0 || currentState.isGameOver()) {
+            return currentState.getStateEvaluation();
+        }
+
+        if (isMaxPlayer) {
+            int maxEval = Integer.MIN_VALUE;
+            for (CheckersState child : currentState.getPossibleStates()) {
+                int eval = minimax(child, depth - 1, false);
+                maxEval = Math.max(maxEval, eval);
+            }
+            return maxEval;
+        } else {
+            int minEval = Integer.MAX_VALUE;
+            for (CheckersState child : currentState.getPossibleStates()) {
+                int eval = minimax(child, depth - 1, true);
+                minEval = Math.min(minEval, eval);
+            }
+            return minEval;
+        }
+    }
+}

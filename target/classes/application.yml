@@ -1,0 +1,13 @@
+checkerboard:
+  tile:
+    size: 100
+    lightColor: FFD2A6
+    darkColor: A85D5D
+  num:
+    rows: 8
+    cols: 8
+  piece:
+    color:
+      one: ED5564
+      two: 434A54
+    radius: 37.5
