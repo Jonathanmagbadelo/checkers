@@ -9,9 +9,9 @@ public class TileView extends Rectangle {
     private boolean isLightTile;
 
     public TileView(String fill, int tileSize, boolean isLightTile) {
-        setFill(Color.web(fill));
         setWidth(tileSize);
         setHeight(tileSize);
+        setFill(Color.web(fill));
         this.tileSize = tileSize;
         this.isLightTile = isLightTile;
     }

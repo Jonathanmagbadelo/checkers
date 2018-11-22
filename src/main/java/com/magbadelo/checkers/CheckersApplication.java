@@ -12,11 +12,8 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
 import javax.annotation.PostConstruct;
 
-@EnableScheduling
 @SpringBootApplication
 public class CheckersApplication extends Application {
     private ConfigurableApplicationContext springContext;

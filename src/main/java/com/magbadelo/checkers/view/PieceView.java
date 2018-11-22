@@ -19,8 +19,8 @@ public class PieceView extends Circle {
     }
 
     public void move(double x, double y) {
-        setCenterX(x);
-        setCenterY(y);
+        setTranslateX(x);
+        setTranslateY(y);
     }
 
     public void setOrigin(double originX, double originY) {

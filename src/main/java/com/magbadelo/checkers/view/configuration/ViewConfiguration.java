@@ -2,20 +2,15 @@ package com.magbadelo.checkers.view.configuration;
 
 import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.stream.IntStream;
 
 @Configuration
 public class ViewConfiguration {
@@ -47,24 +42,28 @@ public class ViewConfiguration {
     @Bean
     public GridPane gridPane() {
         GridPane gridPane = new GridPane();
-        gridPane.setMinSize(tileSize * numRows, tileSize * numCols);
-        gridPane.setMinSize(tileSize * numRows, tileSize * numCols);
+        gridPane.setStyle("-fx-background-color:" + "#" + darkColor + ";");
+        gridPane.setPrefSize(tileSize * numRows, tileSize * numCols);
+        gridPane.setPickOnBounds(false);
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                boolean isLightTile = (row + col) % 2 == 0;
-                String color = isLightTile ? lightColor : darkColor;
-                TileView tileView = new TileView(color, tileSize, isLightTile);
-                gridPane.add(tileView, col, row);
+                if((row + col) % 2 == 0){
+                    gridPane.add(new TileView(lightColor, tileSize, true), col, row);
+                } else{
+                    if(row < 3){
+                        PieceView pieceView = new PieceView(pieceColorOne, pieceRadius);
+                        gridPane.add(pieceView, col, row);
+                        GridPane.setHalignment(pieceView,HPos.CENTER);
+                    }
+                    if(row > 4){
+                        PieceView pieceView = new PieceView(pieceColorTwo, pieceRadius);
+                        gridPane.add(pieceView, col, row);
+                        GridPane.setHalignment(pieceView,HPos.CENTER);
+                    }
+                }
             }
         }
         return gridPane;
-    }
-
-    @Bean
-    public StackPane stackPane() {
-        StackPane stackPane = new StackPane();
-        stackPane.setMinSize(tileSize * numRows, tileSize * numCols);
-        return stackPane;
     }
 
     @Bean
@@ -121,15 +120,4 @@ public class ViewConfiguration {
         vBox.getChildren().add(logArea);
         return vBox;
     }
-
-    @Bean
-    public Group pieceGroup() {
-        Group pieceGroup = new Group();
-        IntStream.range(0, 24).forEach(num ->
-                pieceGroup.getChildren().add(num < 12 ? new PieceView(pieceColorOne, pieceRadius) : new PieceView(pieceColorTwo, pieceRadius))
-        );
-        pieceGroup.setAutoSizeChildren(false);
-        return pieceGroup;
-    }
-
 }

@@ -40,34 +40,16 @@ public class CheckerBoardController {
     }
 
     private void initialisePieces() {
-        Piece[][] initialState = checkersBoard.getCurrentCheckersState().getBoardState();
-        int index = 0;
-        Group pieceGroup = checkerBoardView.getPiecesGroup();
-
-        for (int row = 0; row < initialState.length; row++) {
-            for (int col = 0; col < initialState.length; col++) {
-                if (checkersBoard.getCurrentCheckersState().hasPiece(row, col)) {
-                    TileView tileView = (TileView) checkerBoardView.getBoard().getChildren().get((row * initialState.length) + col);
-                    PieceView pieceView = (PieceView) pieceGroup.getChildren().get(index);
-                    pieceView.move(tileView.getCentreX(), tileView.getCentreY());
-                    pieceView.setOrigin(tileView.getCentreX(), tileView.getCentreY());
-                    index++;
-                }
-            }
-        }
         checkersBoard.getHumanPlayer().setPieceType(PieceType.RED);
         checkersBoard.getAiPlayer().setPieceType(PieceType.BLACK);
         System.out.println(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer()).size());
         setPieceViewEventHandles();
-        checkerBoardView.getCheckerBoardContainer().getChildren().add(pieceGroup);
     }
 
     private void setPieceViewEventHandles() {
-        checkerBoardView.getPiecesGroup().getChildren().forEach(child -> {
-            PieceView pieceView = (PieceView) child;
-            if (checkersBoard.getHumanPlayer().getPieceType().toString().equals(pieceView.getColor())){
-                pieceController.setPieceViewEventHandles(pieceView);
-            }
-        });
+        checkerBoardView.getBoard().getChildren().stream()
+                .filter(node -> node instanceof PieceView)
+                .filter(node -> checkersBoard.getHumanPlayer().getPieceType().toString().equals(((PieceView) node).getColor()))
+                .forEach(node -> pieceController.setPieceViewEventHandles((PieceView) node));
     }
 }
