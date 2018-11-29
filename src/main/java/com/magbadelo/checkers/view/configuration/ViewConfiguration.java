@@ -1,8 +1,6 @@
 package com.magbadelo.checkers.view.configuration;
 
-import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -30,39 +28,20 @@ public class ViewConfiguration {
     @Value("${checkerboard.tile.darkColor}")
     private String darkColor;
 
-    @Value("${checkerboard.piece.color.one}")
-    private String pieceColorOne;
 
-    @Value("${checkerboard.piece.color.two}")
-    private String pieceColorTwo;
-
-    @Value("${checkerboard.piece.radius}")
-    private double pieceRadius;
 
     @Bean
     public GridPane gridPane() {
         GridPane gridPane = new GridPane();
-        gridPane.setStyle("-fx-background-color:" + "#" + darkColor + ";");
         gridPane.setPrefSize(tileSize * numRows, tileSize * numCols);
-        gridPane.setPickOnBounds(false);
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                if((row + col) % 2 == 0){
-                    gridPane.add(new TileView(lightColor, tileSize, true), col, row);
-                } else{
-                    if(row < 3){
-                        PieceView pieceView = new PieceView(pieceColorOne, pieceRadius);
-                        gridPane.add(pieceView, col, row);
-                        GridPane.setHalignment(pieceView,HPos.CENTER);
-                    }
-                    if(row > 4){
-                        PieceView pieceView = new PieceView(pieceColorTwo, pieceRadius);
-                        gridPane.add(pieceView, col, row);
-                        GridPane.setHalignment(pieceView,HPos.CENTER);
-                    }
-                }
+                boolean isLightTile = (row + col) % 2 == 0;
+                String fill =  isLightTile ? lightColor : darkColor;
+                gridPane.add(new TileView(fill, tileSize, isLightTile, row, col), col, row);
             }
         }
+        gridPane.setGridLinesVisible(true);
         return gridPane;
     }
 

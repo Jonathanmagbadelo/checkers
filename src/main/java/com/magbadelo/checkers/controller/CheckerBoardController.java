@@ -1,15 +1,17 @@
 package com.magbadelo.checkers.controller;
 
 import com.magbadelo.checkers.model.CheckersBoard;
-import com.magbadelo.checkers.model.Piece;
 import com.magbadelo.checkers.model.PieceType;
 import com.magbadelo.checkers.view.CheckerBoardView;
 import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
-import javafx.scene.Group;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.IntStream;
 
 @Component
 public class CheckerBoardController {
@@ -17,6 +19,15 @@ public class CheckerBoardController {
     private CheckerBoardView checkerBoardView;
     private CheckersBoard checkersBoard;
     private PieceController pieceController;
+
+    @Value("${checkerboard.piece.color.one}")
+    private String pieceColorOne;
+
+    @Value("${checkerboard.piece.color.two}")
+    private String pieceColorTwo;
+
+    @Value("${checkerboard.piece.radius}")
+    private double pieceRadius;
 
     @Autowired
     public CheckerBoardController(CheckerBoardView checkerBoardView, CheckersBoard checkersBoard, PieceController pieceController) {
@@ -30,7 +41,6 @@ public class CheckerBoardController {
         return checkerBoardView;
     }
 
-
     private void setHBoxEventHandles() {
         HBox hBox = getCheckerBoardView().getHBox();
         hBox.getChildren().get(0).setOnMousePressed(event -> {
@@ -40,16 +50,33 @@ public class CheckerBoardController {
     }
 
     private void initialisePieces() {
-        checkersBoard.getHumanPlayer().setPieceType(PieceType.RED);
-        checkersBoard.getAiPlayer().setPieceType(PieceType.BLACK);
+        checkersBoard.getHumanPlayer().setPieceType(PieceType.BLACK);
+        checkersBoard.getAiPlayer().setPieceType(PieceType.RED);
         System.out.println(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer()).size());
-        setPieceViewEventHandles();
+        setTileViewHandles();
+        setPieceViews();
     }
 
-    private void setPieceViewEventHandles() {
+    private void setTileViewHandles() {
         checkerBoardView.getBoard().getChildren().stream()
-                .filter(node -> node instanceof PieceView)
-                .filter(node -> checkersBoard.getHumanPlayer().getPieceType().toString().equals(((PieceView) node).getColor()))
-                .forEach(node -> pieceController.setPieceViewEventHandles((PieceView) node));
+                .filter(node -> node instanceof TileView)
+                .forEach(node -> pieceController.addDropHandling((TileView) node));
+    }
+
+    private void setPieceViews() {
+        GridPane board = checkerBoardView.getBoard();
+        IntStream.range(0, board.getChildren().size() - 1)
+                .filter(index -> (index < 24 || index >= 40))
+                .forEach(index -> {
+                    TileView tileView = (TileView) board.getChildren().get(index);
+                    if (!tileView.isLightTile()) {
+                        String pieceColor = index < 24 ? pieceColorOne : pieceColorTwo;
+                        PieceView pieceView = new PieceView(pieceColor, pieceRadius);
+                        if (pieceView.getColor().equals(checkersBoard.getHumanPlayer().getPieceType().toString())) {
+                            pieceController.dragButton(pieceView);
+                        }
+                        tileView.getChildren().add(pieceView);
+                    }
+                });
     }
 }
