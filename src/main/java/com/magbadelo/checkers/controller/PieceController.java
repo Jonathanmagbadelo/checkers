@@ -72,10 +72,9 @@ public class PieceController {
                     draggingPieceView.ascend();
                 }
 
-//                if (move.isCapturingMove()) {
-//                    PieceView capturedPieceView = (PieceView) board.getChildren().get(getProspectTile(move.getMiddleRow(), move.getMiddleCol()));
-//                    board.getChildren().remove(capturedPieceView);
-//                }
+                if (move.isCapturingMove()) {
+                    capturePieceView(move.getMiddleRow(), move.getMiddleCol());
+                }
 
                 e.setDropCompleted(true);
                 draggingPieceView.setOpacity(100);
@@ -102,15 +101,28 @@ public class PieceController {
             PieceView pieceView = (PieceView) sourceTile.getChildren().get(1);
 
             sourceTile.getChildren().remove(pieceView);
+
+            if (move.isCapturingMove()) {
+                capturePieceView(move.getMiddleRow(), move.getMiddleCol());
+            }
+
             targetTile.getChildren().add(pieceView);
+
+            if (move.isCrowningMove()) {
+                pieceView.ascend();
+            }
 
             checkersBoard.switchCurrentPlayer();
         }
     }
 
-    private TileView getTileView(int row, int col){
+    private TileView getTileView(int row, int col) {
         int index = (row * 8) + col;
         return (TileView) board.getChildren().get(index);
+    }
+
+    private void capturePieceView(int row, int col) {
+        getTileView(row, col).getChildren().remove(1);
     }
 
 }
