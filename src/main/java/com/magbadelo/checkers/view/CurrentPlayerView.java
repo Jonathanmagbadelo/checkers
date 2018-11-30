@@ -17,18 +17,21 @@ public class CurrentPlayerView extends VBox {
     private Label currentPlayer;
 
     public CurrentPlayerView(){
+        this.playerTurn = "Players Turn!";
+        this.aiTurn = "AI's Turn";
+        this.piece = new Circle(37.5, Color.TRANSPARENT);
+        this.currentTurn = playerTurn;
+        this.currentPlayer = new Label(playerTurn);
+
         setStyle("-fx-background-color: #975354;" +
                 "-fx-border-style: solid inside;" +
                 "-fx-border-width: 5;" +
                 "-fx-border-color: #7D4544;");
         setPrefSize(150, 500);
         setMaxSize(150, 500);
-        this.playerTurn = "Players Turn!";
-        this.aiTurn = "AI's Turn";
-        this.piece = new Circle(37.5, Color.TRANSPARENT);
-        this.currentTurn = playerTurn;
-        this.currentPlayer = new Label(playerTurn);
         setAlignment(Pos.CENTER);
+        setSpacing(75);
+
         getChildren().addAll(piece, currentPlayer);
     }
 

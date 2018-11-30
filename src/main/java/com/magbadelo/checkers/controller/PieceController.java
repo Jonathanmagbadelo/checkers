@@ -32,12 +32,14 @@ public class PieceController {
     private CheckersBoard checkersBoard;
     private GridPane board;
     private CurrentPlayerView currentPlayerView;
+    private boolean playerFinishedMove;
 
     @Autowired
     public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView) {
         this.checkersBoard = checkersBoard;
         this.board = board;
         this.currentPlayerView = currentPlayerView;
+        this.playerFinishedMove = false;
     }
 
     public void dragButton(PieceView pieceView) {
@@ -81,8 +83,12 @@ public class PieceController {
                 draggingPieceView = null;
             }
             FxTimer.runLater(
-                    Duration.ofMillis(1500),
-                    this::aiMove);
+                    Duration.ofMillis(10), () -> {
+                        if(playerFinishedMove){
+                            switchPlayer();
+                            FxTimer.runLater(Duration.ofMillis(1000), this::aiMove);
+                        }
+                    });
         });
     }
 
@@ -124,6 +130,7 @@ public class PieceController {
                     completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);
                 } else{
                     //human does what it whats
+                    playerFinishedMove = false;
                 }
                 System.out.println("We lit");
             }
@@ -134,7 +141,9 @@ public class PieceController {
             LOGGER.info("{} piece at {},{} has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol());
         }
 
-        switchPlayer();
+        if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
+            playerFinishedMove = true;
+        }
 
     }
 
