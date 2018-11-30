@@ -27,18 +27,18 @@ public class CurrentPlayerView extends VBox {
         this.aiTurn = "AI's Turn";
         this.piece = new Circle(37.5, Color.TRANSPARENT);
         this.currentTurn = playerTurn;
-        this.currentPlayer = new Label("NO GAME RUNNING");
+        this.currentPlayer = new Label(playerTurn);
         setAlignment(Pos.CENTER);
-        getChildren().addAll(currentPlayer, piece);
+        getChildren().addAll(piece, currentPlayer);
     }
 
-    public void  setPieceColor(String color){
+    public void setPieceColor(String color){
         piece.setFill(Color.web(color));
     }
 
     public void nextTurn(){
         currentTurn = currentTurn.equals(playerTurn) ? aiTurn : playerTurn;
-        getChildren().set(0, new Label(currentTurn));
+        getChildren().set(1, new Label(currentTurn));
     }
 
 }
