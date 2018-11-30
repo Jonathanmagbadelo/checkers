@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ViewConfiguration {
-
     @Value("${checkerboard.tile.size}")
     private int tileSize;
 
@@ -28,8 +27,6 @@ public class ViewConfiguration {
     @Value("${checkerboard.tile.darkColor}")
     private String darkColor;
 
-
-
     @Bean
     public GridPane gridPane() {
         GridPane gridPane = new GridPane();
@@ -37,7 +34,7 @@ public class ViewConfiguration {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
                 boolean isLightTile = (row + col) % 2 == 0;
-                String fill =  isLightTile ? lightColor : darkColor;
+                String fill = isLightTile ? lightColor : darkColor;
                 gridPane.add(new TileView(fill, tileSize, isLightTile, row, col), col, row);
             }
         }
@@ -68,7 +65,6 @@ public class ViewConfiguration {
         hbox.getChildren().addAll(buttonCurrent, buttonProjected);
 
         return hbox;
-
     }
 
     @Bean

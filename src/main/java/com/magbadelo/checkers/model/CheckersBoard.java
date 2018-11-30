@@ -91,6 +91,7 @@ public class CheckersBoard {
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 2 && move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir() * 2) {
                 if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
                     if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
+                        move.setCapturingMove();
                         return true;
                     }
                 }
@@ -132,7 +133,6 @@ public class CheckersBoard {
         currentCheckersState.setPiece(move.getTargetRow(), move.getTargetCol(), piece);
         currentCheckersState.setPiece(move.getSourceRow(), move.getSourceCol(), null);
         if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
-            move.setCapturingMove();
             currentCheckersState.setPiece(move.getMiddleRow(), move.getMiddleCol(), null);
             LOGGER.info("Captured Piece at {},{}!", move.getMiddleRow(), move.getMiddleCol());
         }
@@ -147,6 +147,20 @@ public class CheckersBoard {
 
         if (piece.getPieceType() == PieceType.RED && targetRow == 7) {
             piece.setKing(true);
+            return true;
+        }
+
+        return false;
+    }
+
+        private boolean isMoveFinished(Move move){
+        List<Move> possibleMoves = generateMoves(getCurrentPlayer());
+        possibleMoves = possibleMoves.stream()
+                .filter(Move::isCapturingMove)
+                .filter(nextMove -> nextMove.getSourceRow() == move.getTargetRow() && nextMove.getSourceCol() == move.getTargetCol())
+                .collect(Collectors.toList());
+
+        if(possibleMoves.isEmpty()){
             return true;
         }
 

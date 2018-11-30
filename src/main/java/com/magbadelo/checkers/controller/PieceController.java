@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Component
 public class PieceController {
@@ -125,4 +126,7 @@ public class PieceController {
         getTileView(row, col).getChildren().remove(1);
     }
 
+    private void completePieceViewMove(Move move){
+
+    }
 }

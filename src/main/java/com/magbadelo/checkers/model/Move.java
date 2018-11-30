@@ -1,5 +1,7 @@
 package com.magbadelo.checkers.model;
 
+import java.util.List;
+
 public class Move {
 
     private int sourceRow;
@@ -8,6 +10,8 @@ public class Move {
     private int targetCol;
     private boolean isCapturingMove;
     private boolean isCrowningMove;
+    private boolean isMoveFinished;
+    private List<Move> possibleJumpMoves;
 
     public Move(int sourceRow, int sourceCol, int targetRow, int targetCol){
         this.sourceRow = sourceRow;
@@ -16,6 +20,7 @@ public class Move {
         this.targetCol = targetCol;
         this.isCapturingMove = false;
         this.isCrowningMove = false;
+        this.isMoveFinished = false;
     }
 
     public int getSourceRow() {
@@ -56,5 +61,17 @@ public class Move {
 
     public void setCrowningMove(boolean crowningMove) {
         isCrowningMove = crowningMove;
+    }
+
+    public void setMoveFinished() {
+        isMoveFinished = true;
+    }
+
+    public void setPossibleJumpMoves(List<Move> possibleJumpMoves) {
+        this.possibleJumpMoves = possibleJumpMoves;
+    }
+
+    public List<Move> getPossibleJumpMoves() {
+        return possibleJumpMoves;
     }
 }
