@@ -37,4 +37,6 @@ public class CheckerBoardView {
     public HBox getHBox() {
         return hBox;
     }
+
+    public VBox getLeftVbox(){return leftVbox;}
 }

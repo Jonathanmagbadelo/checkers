@@ -66,21 +66,11 @@ public class PieceController {
                 LOGGER.info("Move from {},{} is valid to {},{}!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol());
 
                 checkersBoard.completeMove(move);
-                sourceTileView.getChildren().remove(draggingPieceView);
-                targetTileView.getChildren().add(draggingPieceView);
-
-                if (move.isCrowningMove()) {
-                    draggingPieceView.ascend();
-                }
-
-                if (move.isCapturingMove()) {
-                    capturePieceView(move.getMiddleRow(), move.getMiddleCol());
-                }
+                completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
 
                 e.setDropCompleted(true);
                 draggingPieceView.setOpacity(100);
                 draggingPieceView = null;
-                checkersBoard.switchCurrentPlayer();
             } else {
                 LOGGER.info("Move from {},{} is invalid to {},{}!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol());
                 e.setDropCompleted(true);
@@ -97,23 +87,11 @@ public class PieceController {
             Move move = moves.get(new Random().nextInt(moves.size()));
             checkersBoard.completeMove(move);
 
-            TileView sourceTile = getTileView(move.getSourceRow(), move.getSourceCol());
-            TileView targetTile = getTileView(move.getTargetRow(), move.getTargetCol());
-            PieceView pieceView = (PieceView) sourceTile.getChildren().get(1);
+            TileView sourceTileView = getTileView(move.getSourceRow(), move.getSourceCol());
+            TileView targetTileView = getTileView(move.getTargetRow(), move.getTargetCol());
+            PieceView pieceView = (PieceView) sourceTileView.getChildren().get(1);
 
-            sourceTile.getChildren().remove(pieceView);
-
-            if (move.isCapturingMove()) {
-                capturePieceView(move.getMiddleRow(), move.getMiddleCol());
-            }
-
-            targetTile.getChildren().add(pieceView);
-
-            if (move.isCrowningMove()) {
-                pieceView.ascend();
-            }
-
-            checkersBoard.switchCurrentPlayer();
+            completePieceViewMove(move, sourceTileView, targetTileView, pieceView);
         }
     }
 
@@ -126,7 +104,31 @@ public class PieceController {
         getTileView(row, col).getChildren().remove(1);
     }
 
-    private void completePieceViewMove(Move move){
+    private void completePieceViewMove(Move move, TileView sourceTileView, TileView targetTileView, PieceView pieceView){
+        sourceTileView.getChildren().remove(pieceView);
+        targetTileView.getChildren().add(pieceView);
+
+        if (move.isCapturingMove()) {
+            capturePieceView(move.getMiddleRow(), move.getMiddleCol());
+            move.setPossibleJumpMoves(checkersBoard.getPossibleJumpMoves(move));
+            if(move.hasPossibleJumpMoves()){
+                //DEAL WITH JUMP MOVES
+                System.out.println("We lit");
+            }
+        }
+
+        if (move.isCrowningMove()) {
+            pieceView.ascend();
+            LOGGER.info("{} piece at {},{} has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol());
+        }
+
+
+
+        checkersBoard.switchCurrentPlayer();
+
+    }
+
+    private void switchPlayer(){
 
     }
 }

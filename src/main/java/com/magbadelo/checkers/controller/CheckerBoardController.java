@@ -3,6 +3,7 @@ package com.magbadelo.checkers.controller;
 import com.magbadelo.checkers.model.CheckersBoard;
 import com.magbadelo.checkers.model.PieceType;
 import com.magbadelo.checkers.view.CheckerBoardView;
+import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
 import javafx.scene.layout.GridPane;
@@ -19,6 +20,7 @@ public class CheckerBoardController {
     private CheckerBoardView checkerBoardView;
     private CheckersBoard checkersBoard;
     private PieceController pieceController;
+    private CurrentPlayerView currentPlayerView;
 
     @Value("${checkerboard.piece.color.one}")
     private String pieceColorOne;
@@ -30,10 +32,11 @@ public class CheckerBoardController {
     private double pieceRadius;
 
     @Autowired
-    public CheckerBoardController(CheckerBoardView checkerBoardView, CheckersBoard checkersBoard, PieceController pieceController) {
+    public CheckerBoardController(CheckerBoardView checkerBoardView, CheckersBoard checkersBoard, PieceController pieceController, CurrentPlayerView currentPlayerView) {
         this.checkerBoardView = checkerBoardView;
         this.checkersBoard = checkersBoard;
         this.pieceController = pieceController;
+        this.currentPlayerView = currentPlayerView;
         setHBoxEventHandles();
     }
 
@@ -52,6 +55,7 @@ public class CheckerBoardController {
     private void initialisePieces() {
         checkersBoard.getHumanPlayer().setPieceType(PieceType.BLACK);
         checkersBoard.getAiPlayer().setPieceType(PieceType.RED);
+        checkerBoardView.getLeftVbox().getChildren().add(currentPlayerView);
         System.out.println(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer()).size());
         setTileViewHandles();
         setPieceViews();

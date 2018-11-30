@@ -153,18 +153,18 @@ public class CheckersBoard {
         return false;
     }
 
-        private boolean isMoveFinished(Move move){
+    public List<Move> getPossibleJumpMoves(Move move) {
         List<Move> possibleMoves = generateMoves(getCurrentPlayer());
         possibleMoves = possibleMoves.stream()
                 .filter(Move::isCapturingMove)
                 .filter(nextMove -> nextMove.getSourceRow() == move.getTargetRow() && nextMove.getSourceCol() == move.getTargetCol())
                 .collect(Collectors.toList());
 
-        if(possibleMoves.isEmpty()){
-            return true;
+        if (possibleMoves.isEmpty()) {
+            return null;
         }
 
-        return false;
+        return possibleMoves;
     }
 
 }

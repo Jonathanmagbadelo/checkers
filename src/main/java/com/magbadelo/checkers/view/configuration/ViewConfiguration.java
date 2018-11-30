@@ -2,6 +2,7 @@ package com.magbadelo.checkers.view.configuration;
 
 import com.magbadelo.checkers.view.TileView;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
@@ -76,6 +77,7 @@ public class ViewConfiguration {
                 "-fx-border-width: 5;" +
                 "-fx-border-color: #7D4544;");
         vBox.setMinWidth(200);
+        vBox.setAlignment(Pos.CENTER);
         return vBox;
     }
 
@@ -95,4 +97,5 @@ public class ViewConfiguration {
         vBox.getChildren().add(logArea);
         return vBox;
     }
+
 }

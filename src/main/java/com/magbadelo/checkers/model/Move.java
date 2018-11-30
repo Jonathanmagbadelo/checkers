@@ -74,4 +74,8 @@ public class Move {
     public List<Move> getPossibleJumpMoves() {
         return possibleJumpMoves;
     }
+
+    public boolean hasPossibleJumpMoves() {
+        return possibleJumpMoves != null;
+    }
 }
