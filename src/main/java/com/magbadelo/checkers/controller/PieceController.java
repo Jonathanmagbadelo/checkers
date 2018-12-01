@@ -83,7 +83,7 @@ public class PieceController {
                     Duration.ofMillis(10), () -> {
                         if (playerFinishedMove) {
                             switchPlayer();
-                            FxTimer.runLater(Duration.ofMillis(1000), this::aiMove);
+                            FxTimer.runLater(Duration.ofMillis(1500), this::aiMove);
                         }
                     });
         });
@@ -127,7 +127,9 @@ public class PieceController {
                     //automaticaly do ai moves
                     //issue here stop recursion
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
-                    completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);
+                    resetTileViewColors();
+                    showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
+                    FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
                 } else {
                     //human does what it whats
                     logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
@@ -146,10 +148,13 @@ public class PieceController {
             logArea.setText(logArea.getText() + String.format("\n %s piece at %d,%d has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol()));
         }
 
-        if (!checkersBoard.getCurrentPlayer().isAIPlayer() && !move.hasPossibleJumpMoves()) {
-            playerFinishedMove = true;
+        if (!move.hasPossibleJumpMoves()) {
             resetTileViewColors();
+            if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
+                playerFinishedMove = true;
+            }
         }
+
 
 
     }
