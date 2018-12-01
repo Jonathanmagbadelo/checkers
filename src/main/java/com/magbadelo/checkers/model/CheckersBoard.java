@@ -30,8 +30,9 @@ public class CheckersBoard {
         this.aiPlayer = new Player(true);
         this.humanPlayer = new Player(false);
         this.currentPlayer = getHumanPlayer();
-        currentCheckersState = new CheckersState(numRows, numCols, currentPlayer);
+        this.currentCheckersState = new CheckersState(numRows, numCols, currentPlayer);
         initialise();
+        currentCheckersState.updateCurrentPieces();
     }
 
     public Player getHumanPlayer() {

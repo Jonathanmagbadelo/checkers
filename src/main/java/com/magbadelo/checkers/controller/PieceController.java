@@ -155,22 +155,27 @@ public class PieceController {
     }
 
     private void switchPlayer() {
-        checkersBoard.switchCurrentPlayer();
-        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
-        currentPlayerView.nextTurn();
+        if (checkersBoard.getCurrentCheckersState().isGameOver()) {
+            currentPlayerView.gameOver();
+        } else {
+            checkersBoard.switchCurrentPlayer();
+            currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
+            currentPlayerView.nextTurn();
+        }
+
     }
 
-    public void showPossibleJumpMoveTileViews(List<Move> possibleJumpMoves){
+    public void showPossibleJumpMoveTileViews(List<Move> possibleJumpMoves) {
         possibleJumpMoves.forEach(move -> {
             TileView tileView = getTileView(move.getTargetRow(), move.getTargetCol());
             ((Rectangle) tileView.getChildren().get(0)).setFill(Color.GREENYELLOW);
         });
     }
 
-    public void resetTileViewColors(){
+    public void resetTileViewColors() {
         board.getChildren().stream()
                 .filter(node -> node instanceof TileView)
-                .filter(node -> ((Rectangle)(((TileView) node).getChildren().get(0))).getFill().equals(Color.GREENYELLOW))
-                .forEach(node -> ((Rectangle)(((TileView) node).getChildren().get(0))).setFill(Color.web("A85D5D")));
+                .filter(node -> ((Rectangle) (((TileView) node).getChildren().get(0))).getFill().equals(Color.GREENYELLOW))
+                .forEach(node -> ((Rectangle) (((TileView) node).getChildren().get(0))).setFill(Color.web("A85D5D")));
     }
 }

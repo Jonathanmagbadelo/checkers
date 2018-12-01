@@ -44,4 +44,8 @@ public class CurrentPlayerView extends VBox {
         getChildren().set(1, new Label(currentTurn));
     }
 
+    public void gameOver(){
+        getChildren().set(1, new Label("Game Over!"));
+    }
+
 }
