@@ -56,7 +56,7 @@ public class CheckerBoardController {
         checkersBoard.getHumanPlayer().setPieceType(PieceType.BLACK);
         checkersBoard.getAiPlayer().setPieceType(PieceType.RED);
         checkerBoardView.getLeftVbox().getChildren().add(currentPlayerView);
-        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().toString());
+        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
         System.out.println(checkersBoard.getCurrentPlayer().getPieceType());
         System.out.println(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer()).size());
         setTileViewHandles();
@@ -78,7 +78,7 @@ public class CheckerBoardController {
                     if (!tileView.isLightTile()) {
                         String pieceColor = index < 24 ? pieceColorOne : pieceColorTwo;
                         PieceView pieceView = new PieceView(pieceColor, pieceRadius);
-                        if (pieceView.getColor().equals(checkersBoard.getHumanPlayer().getPieceType().toString())) {
+                        if (pieceView.getColor().equals(checkersBoard.getHumanPlayer().getPieceType().getColor())) {
                             pieceController.dragButton(pieceView);
                         }
                         tileView.getChildren().add(pieceView);

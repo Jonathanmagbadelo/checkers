@@ -129,6 +129,7 @@ public class PieceController {
                     completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);
                 } else {
                     //human does what it whats
+                    logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
                     playerFinishedMove = false;
                 }
                 System.out.println("We lit");
@@ -142,7 +143,7 @@ public class PieceController {
             logArea.setText(logArea.getText() + String.format("\n %s piece at %d,%d has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol()));
         }
 
-        if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
+        if (!checkersBoard.getCurrentPlayer().isAIPlayer() && !move.hasPossibleJumpMoves()) {
             playerFinishedMove = true;
         }
 
@@ -151,7 +152,7 @@ public class PieceController {
 
     private void switchPlayer() {
         checkersBoard.switchCurrentPlayer();
-        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().toString());
+        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
         currentPlayerView.nextTurn();
     }
 }

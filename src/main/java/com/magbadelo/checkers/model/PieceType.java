@@ -15,6 +15,10 @@ public enum PieceType {
 
     @Override
     public String toString(){
+        return moveDir == 1 ? "Red" : "Black";
+    }
+
+    public String getColor(){
         return moveDir == 1 ? "ED5564" : "434A54";
     }
 }
