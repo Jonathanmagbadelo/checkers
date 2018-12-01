@@ -13,7 +13,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import org.reactfx.util.FxTimer;
 import org.springframework.beans.factory.annotation.Autowired;
