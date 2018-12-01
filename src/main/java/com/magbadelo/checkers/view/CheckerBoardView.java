@@ -1,6 +1,7 @@
 package com.magbadelo.checkers.view;
 
 import javafx.scene.Parent;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,13 +13,15 @@ public class CheckerBoardView {
     private HBox hBox;
     private VBox leftVbox;
     private VBox rightVbox;
+    private TextArea textArea;
 
     @Autowired
-    public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox) {
+    public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox, TextArea logArea) {
         this.board = board;
         this.hBox = hBox;
         this.leftVbox = leftVbox;
         this.rightVbox = rightVbox;
+        rightVbox.getChildren().add(logArea);
     }
 
     public Parent createContent() {
@@ -39,4 +42,5 @@ public class CheckerBoardView {
     }
 
     public VBox getLeftVbox(){return leftVbox;}
+
 }

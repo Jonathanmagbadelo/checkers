@@ -43,7 +43,11 @@ public class CheckersBoard {
     }
 
     public void switchCurrentPlayer() {
-        this.currentPlayer = currentPlayer.isAIPlayer() ? getHumanPlayer() : getAiPlayer();
+        this.currentPlayer = getNextPlayer();
+    }
+
+    public Player getNextPlayer() {
+        return currentPlayer.isAIPlayer() ? getHumanPlayer() : getAiPlayer();
     }
 
     public Player getCurrentPlayer() {
@@ -134,7 +138,7 @@ public class CheckersBoard {
         currentCheckersState.setPiece(move.getSourceRow(), move.getSourceCol(), null);
         if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
             currentCheckersState.setPiece(move.getMiddleRow(), move.getMiddleCol(), null);
-            LOGGER.info("Captured Piece at {},{}!", move.getMiddleRow(), move.getMiddleCol());
+
         }
         move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
     }

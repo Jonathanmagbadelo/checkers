@@ -1,12 +1,12 @@
 package com.magbadelo.checkers.controller;
 
-import com.magbadelo.checkers.CheckersApplication;
 import com.magbadelo.checkers.model.CheckersBoard;
 import com.magbadelo.checkers.model.Move;
 import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
@@ -14,8 +14,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import org.reactfx.util.FxTimer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +23,6 @@ import java.util.Random;
 
 @Component
 public class PieceController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckersApplication.class);
     private final DataFormat pieceViewFormat = new DataFormat("PieceView");
     private PieceView draggingPieceView;
     private TileView sourceTileView;
@@ -33,13 +30,15 @@ public class PieceController {
     private GridPane board;
     private CurrentPlayerView currentPlayerView;
     private boolean playerFinishedMove;
+    private TextArea logArea;
 
     @Autowired
-    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView) {
+    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea) {
         this.checkersBoard = checkersBoard;
         this.board = board;
         this.currentPlayerView = currentPlayerView;
         this.playerFinishedMove = false;
+        this.logArea = logArea;
     }
 
     public void dragButton(PieceView pieceView) {
@@ -69,22 +68,19 @@ public class PieceController {
             sourceTileView = (TileView) (draggingPieceView.getParent());
             Move move = new Move(sourceTileView.getRow(), sourceTileView.getCol(), targetTileView.getRow(), targetTileView.getCol());
             if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move)) {
-                LOGGER.info("Move from {},{} is valid to {},{}!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol());
-
                 completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
-
                 e.setDropCompleted(true);
                 draggingPieceView.setOpacity(100);
                 draggingPieceView = null;
             } else {
-                LOGGER.info("Move from {},{} is invalid to {},{}!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol());
+                logArea.setText(logArea.getText() + String.format("\n Move from %d,%d is invalid to %d,%d!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
                 e.setDropCompleted(true);
                 draggingPieceView.setOpacity(100);
                 draggingPieceView = null;
             }
             FxTimer.runLater(
                     Duration.ofMillis(10), () -> {
-                        if(playerFinishedMove){
+                        if (playerFinishedMove) {
                             switchPlayer();
                             FxTimer.runLater(Duration.ofMillis(1000), this::aiMove);
                         }
@@ -102,6 +98,8 @@ public class PieceController {
             PieceView pieceView = (PieceView) sourceTileView.getChildren().get(1);
 
             completePieceViewMove(move, sourceTileView, targetTileView, pieceView);
+            switchPlayer();
+            playerFinishedMove = false;
         }
     }
 
@@ -114,40 +112,44 @@ public class PieceController {
         getTileView(row, col).getChildren().remove(1);
     }
 
-    private void completePieceViewMove(Move move, TileView sourceTileView, TileView targetTileView, PieceView pieceView){
+    private void completePieceViewMove(Move move, TileView sourceTileView, TileView targetTileView, PieceView pieceView) {
         checkersBoard.completeMove(move);
         sourceTileView.getChildren().remove(pieceView);
         targetTileView.getChildren().add(pieceView);
-
+        logArea.setText(logArea.getText() + String.format("\n %s move from %d,%d to %d,%d!", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
         if (move.isCapturingMove()) {
             capturePieceView(move.getMiddleRow(), move.getMiddleCol());
+            logArea.setText(logArea.getText() + String.format("\n Captured %s piece at %d,%d!", checkersBoard.getNextPlayer().getPieceType().toString(), move.getMiddleRow(), move.getMiddleCol()));
             move.setPossibleJumpMoves(checkersBoard.getPossibleJumpMoves(move));
-            if(move.hasPossibleJumpMoves()){
-                if(checkersBoard.getCurrentPlayer().isAIPlayer()){
+            if (move.hasPossibleJumpMoves()) {
+                if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
                     //automaticaly do ai moves
                     //issue here stop recursion
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
                     completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);
-                } else{
+                } else {
                     //human does what it whats
                     playerFinishedMove = false;
                 }
                 System.out.println("We lit");
+            } else if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
+                playerFinishedMove = true;
             }
         }
 
         if (move.isCrowningMove()) {
             pieceView.ascend();
-            LOGGER.info("{} piece at {},{} has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol());
+            logArea.setText(logArea.getText() + String.format("\n %s piece at %d,%d has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol()));
         }
 
-        if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
+        if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
             playerFinishedMove = true;
         }
 
+
     }
 
-    private void switchPlayer(){
+    private void switchPlayer() {
         checkersBoard.switchCurrentPlayer();
         currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().toString());
         currentPlayerView.nextTurn();

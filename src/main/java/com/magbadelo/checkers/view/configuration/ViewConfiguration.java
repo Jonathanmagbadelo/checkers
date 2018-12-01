@@ -84,7 +84,7 @@ public class ViewConfiguration {
     @Bean
     @Qualifier("rightVbox")
     public VBox rightVbox() {
-        TextArea logArea = new TextArea();
+
         VBox vBox = new VBox();
         vBox.setStyle("-fx-background-color: #975354;" +
                 "-fx-border-style: solid inside;" +
@@ -93,9 +93,14 @@ public class ViewConfiguration {
         vBox.setMinWidth(300);
         vBox.setPadding(new Insets(15, 12, 15, 12));
         vBox.setSpacing(10);
-        logArea.setPrefSize(200, 750);
-        vBox.getChildren().add(logArea);
         return vBox;
+    }
+
+    @Bean
+    public TextArea logArea(){
+        TextArea logArea = new TextArea();
+        logArea.setPrefSize(200, 750);
+        return logArea;
     }
 
 }
