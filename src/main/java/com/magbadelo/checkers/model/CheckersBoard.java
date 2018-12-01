@@ -86,13 +86,13 @@ public class CheckersBoard {
         Piece piece = currentCheckersState.getPiece(move.getSourceRow(), move.getSourceCol());
         if (!isLightTile(move.getTargetRow(), move.getTargetCol())) {
 
-            if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 1 && (move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir()) || piece.isKing()) {
+            if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 1 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir()) || piece.isKing())) {
                 if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
                     return true;
                 }
             }
 
-            if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 2 && (move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir() * 2) || piece.isKing()) {
+            if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 2 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir() * 2) || piece.isKing())) {
                 if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
                     if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
                         move.setCapturingMove();
