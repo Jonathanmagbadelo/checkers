@@ -13,6 +13,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import org.reactfx.util.FxTimer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -130,6 +132,8 @@ public class PieceController {
                 } else {
                     //human does what it whats
                     logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
+                    resetTileViewColors();
+                    showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
                     playerFinishedMove = false;
                 }
                 System.out.println("We lit");
@@ -145,6 +149,7 @@ public class PieceController {
 
         if (!checkersBoard.getCurrentPlayer().isAIPlayer() && !move.hasPossibleJumpMoves()) {
             playerFinishedMove = true;
+            resetTileViewColors();
         }
 
 
@@ -154,5 +159,19 @@ public class PieceController {
         checkersBoard.switchCurrentPlayer();
         currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
         currentPlayerView.nextTurn();
+    }
+
+    public void showPossibleJumpMoveTileViews(List<Move> possibleJumpMoves){
+        possibleJumpMoves.forEach(move -> {
+            TileView tileView = getTileView(move.getTargetRow(), move.getTargetCol());
+            ((Rectangle) tileView.getChildren().get(0)).setFill(Color.GREENYELLOW);
+        });
+    }
+
+    public void resetTileViewColors(){
+        board.getChildren().stream()
+                .filter(node -> node instanceof TileView)
+                .filter(node -> ((Rectangle)(((TileView) node).getChildren().get(0))).getFill().equals(Color.GREENYELLOW))
+                .forEach(node -> ((Rectangle)(((TileView) node).getChildren().get(0))).setFill(Color.web("A85D5D")));
     }
 }
