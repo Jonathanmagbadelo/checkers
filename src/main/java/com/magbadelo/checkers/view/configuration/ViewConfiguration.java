@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -53,7 +54,7 @@ public class ViewConfiguration {
     public HBox topBox() {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(15, 12, 15, 12));
-        hbox.setSpacing(10);
+        hbox.setSpacing(20);
         hbox.setStyle("-fx-background-color: #975354;" +
                 "-fx-border-style: solid inside;" +
                 "-fx-border-width: 5;" +
@@ -62,12 +63,12 @@ public class ViewConfiguration {
         Button newGame = new Button("New Game");
 
         newGame.setPrefSize(100, 20);
-        newGame.setStyle("-fx-background-color: #FFCC66;");
+        //newGame.setStyle("-fx-background-color: #FFCC66;");
 
         Button rules = new Button("Rules");
 
         rules.setPrefSize(100, 20);
-        rules.setStyle("-fx-background-color: #FFCC66;");
+        //rules.setStyle("-fx-background-color: #FFCC66;");
         rules.setOnMousePressed(event -> {
             Alert rulePopUpBox = new Alert(Alert.AlertType.INFORMATION);
             rulePopUpBox.setTitle("Rules");
@@ -88,9 +89,13 @@ public class ViewConfiguration {
         Button buttonProjected = new Button("Debug");
         buttonProjected.setOnMousePressed(event -> System.out.println("Debugging"));
         buttonProjected.setPrefSize(100, 20);
-        buttonProjected.setStyle("-fx-background-color: #FFCC66;");
+        //buttonProjected.setStyle("-fx-background-color: #FFCC66;");
 
         hbox.getChildren().addAll(newGame, buttonProjected, rules);
+        hbox.getChildren().forEach(node -> node.setStyle("-fx-background-color: #FFCC66;" +
+                "-fx-border-style: solid outside;" +
+                "-fx-border-width: 2;" +
+                "-fx-border-color: #5A3132;"));
 
         return hbox;
     }
@@ -119,14 +124,15 @@ public class ViewConfiguration {
                 "-fx-border-color: #7D4544;");
         vBox.setMinWidth(300);
         vBox.setPadding(new Insets(15, 12, 15, 12));
-        vBox.setSpacing(10);
+        vBox.setSpacing(30);
+        vBox.setAlignment(Pos.CENTER);
         return vBox;
     }
 
     @Bean
     public TextArea logArea() {
         TextArea logArea = new TextArea();
-        logArea.setPrefSize(200, 750);
+        logArea.setPrefSize(200, 650);
         logArea.setStyle(".text-area .scroll-pane { "+
                 "    -fx-background-color: yellow;" +
                 ".text-area .scroll-pane .viewport{" +
@@ -137,6 +143,16 @@ public class ViewConfiguration {
         logArea.setFocusTraversable(false);
         logArea.setMouseTransparent(true);
         return logArea;
+    }
+
+    @Bean
+    public Label logLabel() {
+        Label logLabel  = new Label("Game Log");
+        logLabel.setStyle(".label {\n" +
+                "    -fx-font-size: 100px;\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-text-fill: #333333);\n}");
+        return logLabel;
     }
 
 }
