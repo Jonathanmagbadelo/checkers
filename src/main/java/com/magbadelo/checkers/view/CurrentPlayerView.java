@@ -35,8 +35,10 @@ public class CurrentPlayerView extends VBox {
         getChildren().addAll(piece, currentPlayer);
     }
 
-    public void setPieceColor(String color){
+    public void setPieceColor(String color, String stroke){
         piece.setFill(Color.web(color));
+        piece.setStroke(Color.web(stroke));
+        piece.setStrokeWidth(3);
     }
 
     public void nextTurn(){

@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.reactfx.util.FxTimer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -32,6 +33,12 @@ public class PieceController {
     private CurrentPlayerView currentPlayerView;
     private boolean playerFinishedMove;
     private TextArea logArea;
+
+    @Value("${checkerboard.piece.stroke.color.one}")
+    private String pieceStrokeOne;
+
+    @Value("${checkerboard.piece.stroke.color.two}")
+    private String pieceStrokeTwo;
 
     @Autowired
     public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea) {
@@ -128,13 +135,13 @@ public class PieceController {
                     //issue here stop recursion
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
                     resetTileViewColors();
-                    if(!move.isCrowningMove()){
+                    if (!move.isCrowningMove()) {
                         showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
                         FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
                     }
                 } else {
                     //human does what it whats
-                    if(!move.isCrowningMove()){
+                    if (!move.isCrowningMove()) {
                         logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
                         resetTileViewColors();
                         showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
@@ -154,7 +161,7 @@ public class PieceController {
 
         if (!move.hasPossibleJumpMoves()) {
             resetTileViewColors();
-            if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
+            if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
                 playerFinishedMove = true;
             }
         }
@@ -165,7 +172,8 @@ public class PieceController {
             currentPlayerView.gameOver();
         } else {
             checkersBoard.switchCurrentPlayer();
-            currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
+            String strokeColor = checkersBoard.getCurrentPlayer().getPieceType().toString().equals("Red") ? pieceStrokeOne : pieceStrokeTwo;
+            currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor(), strokeColor);
             currentPlayerView.nextTurn();
         }
 

@@ -1,8 +1,10 @@
 package com.magbadelo.checkers.view.configuration;
 
+import com.google.common.io.Resources;
 import com.magbadelo.checkers.view.TileView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
@@ -10,6 +12,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 @Configuration
 public class ViewConfiguration {
@@ -53,17 +59,38 @@ public class ViewConfiguration {
                 "-fx-border-width: 5;" +
                 "-fx-border-color: #5A3132;");
 
-        Button buttonCurrent = new Button("New Game");
+        Button newGame = new Button("New Game");
 
-        buttonCurrent.setPrefSize(100, 20);
-        buttonCurrent.setStyle("-fx-background-color: #FFCC66;");
+        newGame.setPrefSize(100, 20);
+        newGame.setStyle("-fx-background-color: #FFCC66;");
+
+        Button rules = new Button("Rules");
+
+        rules.setPrefSize(100, 20);
+        rules.setStyle("-fx-background-color: #FFCC66;");
+        rules.setOnMousePressed(event -> {
+            Alert rulePopUpBox = new Alert(Alert.AlertType.INFORMATION);
+            rulePopUpBox.setTitle("Rules");
+            rulePopUpBox.setHeaderText("Checker Game Rules");
+            URL checkerRulesUrl = Resources.getResource("checker-rules.txt");
+            try {
+                String checkerRules = Resources.toString(checkerRulesUrl, Charset.defaultCharset());
+                rulePopUpBox.setContentText(checkerRules);
+            } catch (IOException e) {
+                e.printStackTrace();
+                rulePopUpBox.setContentText("no rules set");
+            }
+
+
+            rulePopUpBox.showAndWait();
+        });
 
         Button buttonProjected = new Button("Debug");
         buttonProjected.setOnMousePressed(event -> System.out.println("Debugging"));
         buttonProjected.setPrefSize(100, 20);
         buttonProjected.setStyle("-fx-background-color: #FFCC66;");
 
-        hbox.getChildren().addAll(buttonCurrent, buttonProjected);
+        hbox.getChildren().addAll(newGame, buttonProjected, rules);
 
         return hbox;
     }

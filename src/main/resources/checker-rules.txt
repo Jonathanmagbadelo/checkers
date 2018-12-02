@@ -1,0 +1,11 @@
+Men´s moves
+
+They move and capture only diagonally forwards.
+
+Kings moves
+
+They move and capture diagonally forwards or backwards, but they can´t jump over empty cells.
+
+Particularities about the end of the game
+
+The game ends in a draw after doing 100 king moves in a row without advancing any man nor doing any capture.

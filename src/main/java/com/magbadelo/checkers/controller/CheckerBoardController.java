@@ -62,7 +62,7 @@ public class CheckerBoardController {
         checkersBoard.getHumanPlayer().setPieceType(PieceType.BLACK);
         checkersBoard.getAiPlayer().setPieceType(PieceType.RED);
         checkerBoardView.getLeftVbox().getChildren().add(currentPlayerView);
-        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor());
+        currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor(), pieceStrokeTwo);
         System.out.println(checkersBoard.getCurrentPlayer().getPieceType());
         System.out.println(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer()).size());
         setTileViewHandles();
