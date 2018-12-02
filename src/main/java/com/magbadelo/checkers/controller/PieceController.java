@@ -128,14 +128,18 @@ public class PieceController {
                     //issue here stop recursion
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
                     resetTileViewColors();
-                    showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
-                    FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
+                    if(!move.isCrowningMove()){
+                        showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
+                        FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
+                    }
                 } else {
                     //human does what it whats
-                    logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
-                    resetTileViewColors();
-                    showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
-                    playerFinishedMove = false;
+                    if(!move.isCrowningMove()){
+                        logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
+                        resetTileViewColors();
+                        showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
+                        playerFinishedMove = false;
+                    }
                 }
                 System.out.println("We lit");
             } else if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
@@ -144,8 +148,8 @@ public class PieceController {
         }
 
         if (move.isCrowningMove()) {
-            pieceView.ascend();
-            logArea.setText(logArea.getText() + String.format("\n %s piece at %d,%d has ASCENDED", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol()));
+            pieceView.crown();
+            logArea.setText(logArea.getText() + String.format("\n %s piece at %d,%d is now a king", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol()));
         }
 
         if (!move.hasPossibleJumpMoves()) {
@@ -154,9 +158,6 @@ public class PieceController {
                 playerFinishedMove = true;
             }
         }
-
-
-
     }
 
     private void switchPlayer() {
@@ -173,7 +174,9 @@ public class PieceController {
     public void showPossibleJumpMoveTileViews(List<Move> possibleJumpMoves) {
         possibleJumpMoves.forEach(move -> {
             TileView tileView = getTileView(move.getTargetRow(), move.getTargetCol());
-            ((Rectangle) tileView.getChildren().get(0)).setFill(Color.GREENYELLOW);
+            Rectangle tile = ((Rectangle) tileView.getChildren().get(0));
+            tile.setFill(Color.GREENYELLOW);
+            tile.setOpacity(70);
         });
     }
 

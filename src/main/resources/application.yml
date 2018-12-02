@@ -7,7 +7,13 @@ checkerboard:
     rows: 8
     cols: 8
   piece:
-    color:
-      one: ED5564
-      two: 434A54
+    fill:
+      color:
+        one: ED5564
+        two: 434A54
+    stroke:
+      color:
+        one: 762A32
+        two: 0D0E10
+
     radius: 37.5

@@ -97,9 +97,18 @@ public class ViewConfiguration {
     }
 
     @Bean
-    public TextArea logArea(){
+    public TextArea logArea() {
         TextArea logArea = new TextArea();
         logArea.setPrefSize(200, 750);
+        logArea.setStyle(".text-area .scroll-pane { "+
+                "    -fx-background-color: yellow;" +
+                ".text-area .scroll-pane .viewport{" +
+                "    -fx-background-color: transparent;" +
+                ".text-area .scroll-pane .content{" +
+                "    -fx-background-color: transparent;}");
+        logArea.setEditable(false);
+        logArea.setFocusTraversable(false);
+        logArea.setMouseTransparent(true);
         return logArea;
     }
 

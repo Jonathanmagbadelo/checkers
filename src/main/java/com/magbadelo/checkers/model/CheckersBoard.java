@@ -89,6 +89,7 @@ public class CheckersBoard {
 
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 1 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir()) || piece.isKing())) {
                 if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
+                    move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
                     return true;
                 }
             }
@@ -97,6 +98,7 @@ public class CheckersBoard {
                 if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
                     if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
                         move.setCapturingMove();
+                        move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
                         return true;
                     }
                 }
@@ -122,7 +124,7 @@ public class CheckersBoard {
                     everyMove.add(new Move(row, col, (row + direction), (col - 1)));
                     everyMove.add(new Move(row, col, (row + (direction * 2)), (col + 2)));
                     everyMove.add(new Move(row, col, (row + (direction * 2)), (col - 2)));
-                    if(currentCheckersState.getPiece(row, col).isKing()){
+                    if (currentCheckersState.getPiece(row, col).isKing()) {
                         //Kings can move in backwards
                         everyMove.add(new Move(row, col, (row - direction), (col + 1)));
                         everyMove.add(new Move(row, col, (row - direction), (col - 1)));
@@ -146,22 +148,22 @@ public class CheckersBoard {
         currentCheckersState.setPiece(move.getSourceRow(), move.getSourceCol(), null);
         if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
             currentCheckersState.setPiece(move.getMiddleRow(), move.getMiddleCol(), null);
-
         }
-        move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
+        if (move.isCrowningMove()) {
+            piece.crown();
+        }
     }
 
     public boolean isCrowningMove(Piece piece, int targetRow) {
-        if (piece.getPieceType() == PieceType.BLACK && targetRow == 0) {
-            piece.setKing(true);
-            return true;
-        }
+        if (!piece.isKing()) {
+            if (piece.getPieceType() == PieceType.BLACK && targetRow == 0) {
+                return true;
+            }
 
-        if (piece.getPieceType() == PieceType.RED && targetRow == 7) {
-            piece.setKing(true);
-            return true;
+            if (piece.getPieceType() == PieceType.RED && targetRow == 7) {
+                return true;
+            }
         }
-
         return false;
     }
 

@@ -37,7 +37,8 @@ public class Piece {
         this.currentRow = currentRow;
     }
 
-    public void setKing(boolean king) {
-        isKing = king;
+    public void crown() {
+        isKing = true;
     }
 }
+

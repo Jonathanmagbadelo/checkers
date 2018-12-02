@@ -22,11 +22,17 @@ public class CheckerBoardController {
     private PieceController pieceController;
     private CurrentPlayerView currentPlayerView;
 
-    @Value("${checkerboard.piece.color.one}")
+    @Value("${checkerboard.piece.fill.color.one}")
     private String pieceColorOne;
 
-    @Value("${checkerboard.piece.color.two}")
+    @Value("${checkerboard.piece.fill.color.two}")
     private String pieceColorTwo;
+
+    @Value("${checkerboard.piece.stroke.color.one}")
+    private String pieceStrokeOne;
+
+    @Value("${checkerboard.piece.stroke.color.two}")
+    private String pieceStrokeTwo;
 
     @Value("${checkerboard.piece.radius}")
     private double pieceRadius;
@@ -77,7 +83,8 @@ public class CheckerBoardController {
                     TileView tileView = (TileView) board.getChildren().get(index);
                     if (!tileView.isLightTile()) {
                         String pieceColor = index < 24 ? pieceColorOne : pieceColorTwo;
-                        PieceView pieceView = new PieceView(pieceColor, pieceRadius);
+                        String pieceStroke = index < 24 ? pieceStrokeOne : pieceStrokeTwo;
+                        PieceView pieceView = new PieceView(pieceColor, pieceStroke, pieceRadius);
                         if (pieceView.getColor().equals(checkersBoard.getHumanPlayer().getPieceType().getColor())) {
                             pieceController.dragButton(pieceView);
                         }
