@@ -35,6 +35,17 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Maven central</name>
+            <url>http://central.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>

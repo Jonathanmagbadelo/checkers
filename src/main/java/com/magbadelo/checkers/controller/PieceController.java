@@ -51,15 +51,17 @@ public class PieceController {
 
     public void dragButton(PieceView pieceView) {
         pieceView.setOnDragDetected(e -> {
-            Dragboard db = pieceView.startDragAndDrop(TransferMode.MOVE);
-            SnapshotParameters sp = new SnapshotParameters();
-            sp.setFill(Color.TRANSPARENT);
-            db.setDragView(pieceView.snapshot(sp, null));
-            ClipboardContent cc = new ClipboardContent();
-            cc.put(pieceViewFormat, " ");
-            db.setContent(cc);
-            pieceView.setOpacity(0);
-            draggingPieceView = pieceView;
+            if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
+                Dragboard db = pieceView.startDragAndDrop(TransferMode.MOVE);
+                SnapshotParameters sp = new SnapshotParameters();
+                sp.setFill(Color.TRANSPARENT);
+                db.setDragView(pieceView.snapshot(sp, null));
+                ClipboardContent cc = new ClipboardContent();
+                cc.put(pieceViewFormat, " ");
+                db.setContent(cc);
+                pieceView.setOpacity(0);
+                draggingPieceView = pieceView;
+            }
         });
     }
 
