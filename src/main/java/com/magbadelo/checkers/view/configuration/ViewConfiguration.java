@@ -4,11 +4,10 @@ import com.google.common.io.Resources;
 import com.magbadelo.checkers.view.TileView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.util.StringConverter;
+import org.controlsfx.control.SegmentedButton;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -91,6 +90,7 @@ public class ViewConfiguration {
         buttonProjected.setPrefSize(100, 20);
         //buttonProjected.setStyle("-fx-background-color: #FFCC66;");
 
+
         hbox.getChildren().addAll(newGame, buttonProjected, rules);
         hbox.getChildren().forEach(node -> node.setStyle("-fx-background-color: #FFCC66;" +
                 "-fx-border-style: solid outside;" +
@@ -133,7 +133,7 @@ public class ViewConfiguration {
     public TextArea logArea() {
         TextArea logArea = new TextArea();
         logArea.setPrefSize(200, 650);
-        logArea.setStyle(".text-area .scroll-pane { "+
+        logArea.setStyle(".text-area .scroll-pane { " +
                 "    -fx-background-color: yellow;" +
                 ".text-area .scroll-pane .viewport{" +
                 "    -fx-background-color: transparent;" +
@@ -147,12 +147,40 @@ public class ViewConfiguration {
 
     @Bean
     public Label logLabel() {
-        Label logLabel  = new Label("Game Log");
+        Label logLabel = new Label("Game Log");
         logLabel.setStyle(".label {\n" +
                 "    -fx-font-size: 100px;\n" +
                 "    -fx-font-weight: bold;\n" +
                 "    -fx-text-fill: #333333);\n}");
         return logLabel;
+    }
+
+    @Bean
+    public ToggleGroup difficulty() {
+        final ToggleGroup group = new ToggleGroup();
+
+        RadioButton rb1 = new RadioButton("Easy");
+        rb1.setToggleGroup(group);
+        rb1.setSelected(true);
+
+        RadioButton rb2 = new RadioButton("Medium");
+        rb2.setToggleGroup(group);
+
+        RadioButton rb3 = new RadioButton("Hard");
+        rb3.setToggleGroup(group);
+
+        group.getToggles().forEach(toggle -> {
+            ((RadioButton) toggle).getStyleClass().add("red-radio-button");
+            ((RadioButton) toggle).setStyle(".red-radio-button .dot{" +
+                    "-fx-mark-highlight-color: #5A3132 ;" +
+                    "-fx-mark-color: #7D4544 ;" +
+                    "-fx-focus-color: #5A3132 ;}" +
+                    ".red-radio-button .radio{" +
+                    " -fx-border-color: #7D4544 ;" +
+                    " -fx-border-width: 3 ;}");
+            ((RadioButton) toggle).setAlignment(Pos.CENTER_RIGHT);
+        });
+        return group;
     }
 
 }

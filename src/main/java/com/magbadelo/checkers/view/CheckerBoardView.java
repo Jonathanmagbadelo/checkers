@@ -1,9 +1,9 @@
 package com.magbadelo.checkers.view;
 
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import org.controlsfx.control.SegmentedButton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,13 +14,16 @@ public class CheckerBoardView {
     private HBox hBox;
     private VBox leftVbox;
     private VBox rightVbox;
+    private ToggleGroup difficulty;
 
     @Autowired
-    public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox, TextArea logArea, Label logLabel) {
+    public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox, TextArea logArea, Label logLabel, ToggleGroup difficulty) {
         this.board = board;
         this.hBox = hBox;
         this.leftVbox = leftVbox;
         this.rightVbox = rightVbox;
+        this.difficulty = difficulty;
+        difficulty.getToggles().forEach(toggle -> hBox.getChildren().add((RadioButton) toggle));
         rightVbox.getChildren().addAll(logLabel, logArea);
     }
 
@@ -41,6 +44,11 @@ public class CheckerBoardView {
         return hBox;
     }
 
-    public VBox getLeftVbox(){return leftVbox;}
+    public VBox getLeftVbox() {
+        return leftVbox;
+    }
 
+    public ToggleGroup getDifficulty() {
+        return difficulty;
+    }
 }

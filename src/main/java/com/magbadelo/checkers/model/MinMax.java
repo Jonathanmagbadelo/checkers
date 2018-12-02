@@ -26,4 +26,8 @@ public class MinMax {
             return minEval;
         }
     }
+
+    public void generateGameTree(){
+        
+    }
 }

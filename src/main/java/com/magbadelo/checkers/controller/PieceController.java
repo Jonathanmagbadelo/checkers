@@ -144,7 +144,7 @@ public class PieceController {
                 } else {
                     //human does what it whats
                     if (!move.isCrowningMove()) {
-                        logArea.setText(logArea.getText() + "\n PLAYER SHOULD DOUBLE JUMP");
+                        logArea.setText(logArea.getText() + "\n Player MUST capture!");
                         resetTileViewColors();
                         showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
                         playerFinishedMove = false;
