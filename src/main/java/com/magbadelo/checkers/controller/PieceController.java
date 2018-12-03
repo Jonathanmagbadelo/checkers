@@ -2,7 +2,7 @@ package com.magbadelo.checkers.controller;
 
 import com.magbadelo.checkers.model.CheckersBoard;
 import com.magbadelo.checkers.model.CheckersState;
-import com.magbadelo.checkers.model.MinMax;
+import com.magbadelo.checkers.model.NegaMax;
 import com.magbadelo.checkers.model.Move;
 import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +37,7 @@ public class PieceController {
     private boolean playerFinishedMove;
     private TextArea logArea;
     private CheckersState currentCheckersState;
-    private MinMax minMax;
+    private NegaMax minMax;
 
     @Value("${checkerboard.piece.stroke.color.one}")
     private String pieceStrokeOne;
@@ -45,7 +46,7 @@ public class PieceController {
     private String pieceStrokeTwo;
 
     @Autowired
-    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea, MinMax minMax) {
+    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea, NegaMax minMax) {
         this.checkersBoard = checkersBoard;
         this.board = board;
         this.currentPlayerView = currentPlayerView;
@@ -104,11 +105,27 @@ public class PieceController {
         });
     }
 
+    public Move getNegaMaxMove(List<Move> possibleMoves) {
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
+        Move bestMove = possibleMoves.get(0);
+        for (Move possibleMove : possibleMoves) {
+            CheckersState checkersState = new CheckersState(currentCheckersState);
+            int eval = minMax.negaMax(checkersState, 10, false, beta, alpha);
+            if( eval > alpha){
+                alpha = eval;
+                bestMove = possibleMove;
+            }
+        }
+        return bestMove;
+    }
+
     private void aiMove() {
-        minMax.generateGameTree(currentCheckersState);
+
         if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
             List<Move> moves = checkersBoard.generateMoves(checkersBoard.getAiPlayer(), currentCheckersState);
-            Move move = moves.get(new Random().nextInt(moves.size()));
+            //Move move = moves.get(new Random().nextInt(moves.size()));
+            Move move = getNegaMaxMove(moves);
 
             TileView sourceTileView = getTileView(move.getSourceRow(), move.getSourceCol());
             TileView targetTileView = getTileView(move.getTargetRow(), move.getTargetCol());
