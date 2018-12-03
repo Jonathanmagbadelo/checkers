@@ -153,6 +153,7 @@ public class CheckersBoard {
         if (move.isCrowningMove()) {
             piece.crown();
         }
+        checkersState.updateCurrentPieces();
     }
 
     public boolean isCrowningMove(Piece piece, int targetRow) {

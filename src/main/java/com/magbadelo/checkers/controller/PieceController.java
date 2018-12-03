@@ -2,6 +2,7 @@ package com.magbadelo.checkers.controller;
 
 import com.magbadelo.checkers.model.CheckersBoard;
 import com.magbadelo.checkers.model.CheckersState;
+import com.magbadelo.checkers.model.MinMax;
 import com.magbadelo.checkers.model.Move;
 import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
@@ -35,6 +36,7 @@ public class PieceController {
     private boolean playerFinishedMove;
     private TextArea logArea;
     private CheckersState currentCheckersState;
+    private MinMax minMax;
 
     @Value("${checkerboard.piece.stroke.color.one}")
     private String pieceStrokeOne;
@@ -43,13 +45,14 @@ public class PieceController {
     private String pieceStrokeTwo;
 
     @Autowired
-    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea) {
+    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea, MinMax minMax) {
         this.checkersBoard = checkersBoard;
         this.board = board;
         this.currentPlayerView = currentPlayerView;
         this.playerFinishedMove = false;
         this.logArea = logArea;
         this.currentCheckersState = checkersBoard.getCurrentCheckersState();
+        this.minMax = minMax;
     }
 
     public void dragButton(PieceView pieceView) {
@@ -102,6 +105,7 @@ public class PieceController {
     }
 
     private void aiMove() {
+        minMax.generateGameTree(currentCheckersState);
         if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
             List<Move> moves = checkersBoard.generateMoves(checkersBoard.getAiPlayer(), currentCheckersState);
             Move move = moves.get(new Random().nextInt(moves.size()));

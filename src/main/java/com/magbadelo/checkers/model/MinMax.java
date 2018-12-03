@@ -12,7 +12,8 @@ public class MinMax {
     private CheckersBoard checkersBoard;
     private Player maxPlayer;
     private Player minPlayer;
-    ArrayList<CheckersState> childStates = new ArrayList<>();
+    private ArrayList<CheckersState> childStates = new ArrayList<>();
+    private CheckersState root;
 
     @Autowired
     public MinMax(CheckersBoard checkersBoard){
@@ -45,11 +46,18 @@ public class MinMax {
         }
     }
 
-    public void generateGameTree(){
-
+    public void generateGameTree(CheckersState checkersState){
+        root = checkersState;
+        root.setChildStates(generateChildStates(checkersState, true));
+        for(CheckersState nextCheckerState : root.getChildStates()){
+            CheckersState checkersStateCopy = new CheckersState(nextCheckerState);
+            nextCheckerState.setChildStates(generateChildStates(checkersStateCopy, false));
+        }
+        System.out.println("Gang");
     }
 
     public ArrayList<CheckersState> generateChildStates(CheckersState checkersState, boolean isMaxPlayer){
+        childStates.clear();
 
         List<Move> possibleMoves = checkersBoard.generateMoves(isMaxPlayer ? maxPlayer : minPlayer, checkersState);
 

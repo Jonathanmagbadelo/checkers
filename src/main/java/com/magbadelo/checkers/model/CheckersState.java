@@ -20,7 +20,7 @@ public class CheckersState {
     //Copy Constructor
     public CheckersState(CheckersState checkersState){
         int length  = checkersState.getBoardState().length;
-        this.boardState = new Piece[length][];
+        this.boardState = new Piece[length][length];
         IntStream.range(0, length).forEach(row -> IntStream.range(0, length).forEach(col -> {
             if(checkersState.hasPiece(row, col)){
                 boardState[row][col] = checkersState.getPiece(row, col);
