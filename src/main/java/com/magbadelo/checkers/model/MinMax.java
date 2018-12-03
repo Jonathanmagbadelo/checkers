@@ -3,20 +3,29 @@ package com.magbadelo.checkers.model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class MinMax {
 
     private CheckersBoard checkersBoard;
+    private Player maxPlayer;
+    private Player minPlayer;
 
     @Autowired
     public MinMax(CheckersBoard checkersBoard){
         this.checkersBoard = checkersBoard;
+        this.maxPlayer = checkersBoard.getAiPlayer();
+        this.minPlayer = checkersBoard.getHumanPlayer();
     }
 
     public int minimax(CheckersState currentState, int depth, boolean isMaxPlayer) {
         if (depth == 0 || currentState.isGameOver()) {
             return currentState.getStateEvaluation();
         }
+
+        currentState.setChildStates(generateChildStates(currentState));
 
         if (isMaxPlayer) {
             int maxEval = Integer.MIN_VALUE;
@@ -39,7 +48,11 @@ public class MinMax {
 
     }
 
-    public void generateChildStates(CheckersState checkersState){
+    public ArrayList<CheckersState> generateChildStates(CheckersState checkersState, boolean isMaxPlayer){
+        List<Move> possibleMoves = checkersBoard.generateMoves(isMaxPlayer ? maxPlayer : minPlayer, checkersState);
 
+
+
+        return null;
     }
 }
