@@ -48,7 +48,7 @@ public class CheckersState {
         return boardState[row][col];
     }
 
-    public int getStateEvaluation(Player currentPlayer) {
+    public int getStateEvaluation1(Player currentPlayer) {
         int blackPiecesScore = 0;
         int redPiecesScore = 0;
 
@@ -68,6 +68,26 @@ public class CheckersState {
         }
 
         return redPiecesScore + blackPiecesScore;
+    }
+
+    public int getStateEvaluation(Player currentPlayer){
+        int score = 0;
+        for(int row = 0; row < 8; row++){
+            for(int col = 0; col < 8; col++){
+                if(hasPiece(row, col) && getPiece(row, col).getPieceType().equals(currentPlayer.getPieceType())){
+                    if(getPiece(row, col).isKing()){
+                        score += 10;
+                    }else{
+                        if(row > 3){
+                            score += 7;
+                        } else{
+                            score +=5;
+                        }
+                    }
+                }
+            }
+        }
+        return score;
     }
 
     public boolean isGameOver() {
