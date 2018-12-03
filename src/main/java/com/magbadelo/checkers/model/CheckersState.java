@@ -23,7 +23,7 @@ public class CheckersState {
         this.boardState = new Piece[length][length];
         IntStream.range(0, length).forEach(row -> IntStream.range(0, length).forEach(col -> {
             if(checkersState.hasPiece(row, col)){
-                boardState[row][col] = checkersState.getPiece(row, col);
+                boardState[row][col] = new Piece(checkersState.getPiece(row, col).isKing(), checkersState.getPiece(row, col).getPieceType());
             }
         }));
         this.childStates = new ArrayList<>();

@@ -121,7 +121,6 @@ public class PieceController {
     }
 
     private void aiMove() {
-
         if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
             List<Move> moves = checkersBoard.generateMoves(checkersBoard.getAiPlayer(), currentCheckersState);
             //Move move = moves.get(new Random().nextInt(moves.size()));
