@@ -30,7 +30,7 @@ public class CheckersBoard {
         this.aiPlayer = new Player(true);
         this.humanPlayer = new Player(false);
         this.currentPlayer = getHumanPlayer();
-        this.currentCheckersState = new CheckersState(numRows, numCols, currentPlayer);
+        this.currentCheckersState = new CheckersState(numRows, numCols);
         initialise();
         currentCheckersState.updateCurrentPieces();
     }
@@ -73,11 +73,11 @@ public class CheckersBoard {
 
     private Piece makePiece(boolean isLightTile, int row, int col) {
         if (row <= 2 && !isLightTile) {
-            return new Piece(row, col, false, PieceType.RED);
+            return new Piece(false, PieceType.RED);
         }
 
         if (row >= 5 && !isLightTile) {
-            return new Piece(row, col, false, PieceType.BLACK);
+            return new Piece(false, PieceType.BLACK);
         }
 
         return null;
@@ -114,6 +114,7 @@ public class CheckersBoard {
         return col % 2 != 0;
     }
 
+    //successor function
     public List<Move> generateMoves(Player player, CheckersState checkersState) {
         int direction = player.getPieceType().getMoveDir();
         List<Move> everyMove = new ArrayList<>();

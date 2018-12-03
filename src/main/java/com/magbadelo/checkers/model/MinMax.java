@@ -12,6 +12,7 @@ public class MinMax {
     private CheckersBoard checkersBoard;
     private Player maxPlayer;
     private Player minPlayer;
+    ArrayList<CheckersState> childStates = new ArrayList<>();
 
     @Autowired
     public MinMax(CheckersBoard checkersBoard){
@@ -22,10 +23,10 @@ public class MinMax {
 
     public int minimax(CheckersState currentState, int depth, boolean isMaxPlayer) {
         if (depth == 0 || currentState.isGameOver()) {
-            return currentState.getStateEvaluation();
+            return currentState.getStateEvaluation(isMaxPlayer ? maxPlayer : minPlayer);
         }
 
-        currentState.setChildStates(generateChildStates(currentState));
+        currentState.setChildStates(generateChildStates(currentState, isMaxPlayer));
 
         if (isMaxPlayer) {
             int maxEval = Integer.MIN_VALUE;
@@ -49,10 +50,41 @@ public class MinMax {
     }
 
     public ArrayList<CheckersState> generateChildStates(CheckersState checkersState, boolean isMaxPlayer){
+
         List<Move> possibleMoves = checkersBoard.generateMoves(isMaxPlayer ? maxPlayer : minPlayer, checkersState);
 
+        for(Move move : possibleMoves){
 
+            if(!move.isCapturingMove()){
+                CheckersState checkerStateCopy = new CheckersState(checkersState);
+                checkersBoard.completeMove(move, checkerStateCopy);
+                childStates.add(checkerStateCopy);
+            } else {
+                CheckersState checkerStateCopy = new CheckersState(checkersState);
+                checkersBoard.completeMove(move, checkerStateCopy);
+                move.setPossibleJumpMoves(checkersBoard.getPossibleJumpMoves(move, checkerStateCopy));
+                if(!move.hasPossibleJumpMoves()){
+                    childStates.add(checkerStateCopy);
+                } else{
+                    traverseJumpMoves(move, checkerStateCopy);
+                }
+            }
 
-        return null;
+        }
+
+        return childStates;
+    }
+
+    //move defo has possible jump moves
+    public void traverseJumpMoves(Move move, CheckersState checkersState){
+        if(!move.hasPossibleJumpMoves()){
+            childStates.add(checkersState);
+        } else{
+            for(Move jumpMove : move.getPossibleJumpMoves()){
+                CheckersState checkerStateCopy = new CheckersState(checkersState);
+                checkersBoard.completeMove(jumpMove, checkerStateCopy);
+                traverseJumpMoves(jumpMove, checkerStateCopy);
+            }
+        }
     }
 }

@@ -2,21 +2,34 @@ package com.magbadelo.checkers.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class CheckersState {
     private Piece[][] boardState;
-    private int stateEvaluation;
-    private Player currentPlayer;
     private ArrayList<CheckersState> childStates;
     private List<Piece> currentBlackPieces;
     private List<Piece> currentRedPieces;
 
-    public CheckersState(int rows, int cols, Player currentPlayer) {
+    public CheckersState(int rows, int cols) {
         this.boardState = new Piece[rows][cols];
-        this.currentPlayer = currentPlayer;
         this.childStates = new ArrayList<>();
         this.currentBlackPieces = new ArrayList<>();
         this.currentRedPieces = new ArrayList<>();
+    }
+
+    //Copy Constructor
+    public CheckersState(CheckersState checkersState){
+        int length  = checkersState.getBoardState().length;
+        this.boardState = new Piece[length][];
+        IntStream.range(0, length).forEach(row -> IntStream.range(0, length).forEach(col -> {
+            if(checkersState.hasPiece(row, col)){
+                boardState[row][col] = checkersState.getPiece(row, col);
+            }
+        }));
+        this.childStates = new ArrayList<>();
+        this.currentBlackPieces = new ArrayList<>();
+        this.currentRedPieces = new ArrayList<>();
+        updateCurrentPieces();
     }
 
     public Piece[][] getBoardState() {
@@ -35,7 +48,7 @@ public class CheckersState {
         return boardState[row][col];
     }
 
-    private void setStateEvaluation() {
+    public int getStateEvaluation(Player currentPlayer) {
         int blackPiecesScore = 0;
         int redPiecesScore = 0;
 
@@ -54,12 +67,7 @@ public class CheckersState {
             blackPiecesScore = blackPiecesScore * -1;
         }
 
-        stateEvaluation = redPiecesScore + blackPiecesScore;
-    }
-
-    public int getStateEvaluation() {
-        setStateEvaluation();
-        return stateEvaluation;
+        return redPiecesScore + blackPiecesScore;
     }
 
     public boolean isGameOver() {
