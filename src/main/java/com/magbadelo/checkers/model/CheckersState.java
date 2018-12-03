@@ -7,14 +7,14 @@ public class CheckersState {
     private Piece[][] boardState;
     private int stateEvaluation;
     private Player currentPlayer;
-    private ArrayList<CheckersState> possibleStates;
+    private ArrayList<CheckersState> childStates;
     private List<Piece> currentBlackPieces;
     private List<Piece> currentRedPieces;
 
     public CheckersState(int rows, int cols, Player currentPlayer) {
         this.boardState = new Piece[rows][cols];
         this.currentPlayer = currentPlayer;
-        this.possibleStates = new ArrayList<>();
+        this.childStates = new ArrayList<>();
         this.currentBlackPieces = new ArrayList<>();
         this.currentRedPieces = new ArrayList<>();
     }
@@ -84,8 +84,12 @@ public class CheckersState {
         }
     }
 
-    public ArrayList<CheckersState> getPossibleStates() {
-        return possibleStates;
+    public ArrayList<CheckersState> getChildStates() {
+        return childStates;
+    }
+
+    public void setChildStates(ArrayList<CheckersState> childStates){
+        this.childStates = childStates;
     }
 
 }

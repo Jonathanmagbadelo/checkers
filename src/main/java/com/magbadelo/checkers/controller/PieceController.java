@@ -1,6 +1,7 @@
 package com.magbadelo.checkers.controller;
 
 import com.magbadelo.checkers.model.CheckersBoard;
+import com.magbadelo.checkers.model.CheckersState;
 import com.magbadelo.checkers.model.Move;
 import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
@@ -33,6 +34,7 @@ public class PieceController {
     private CurrentPlayerView currentPlayerView;
     private boolean playerFinishedMove;
     private TextArea logArea;
+    private CheckersState currentCheckersState;
 
     @Value("${checkerboard.piece.stroke.color.one}")
     private String pieceStrokeOne;
@@ -47,6 +49,7 @@ public class PieceController {
         this.currentPlayerView = currentPlayerView;
         this.playerFinishedMove = false;
         this.logArea = logArea;
+        this.currentCheckersState = checkersBoard.getCurrentCheckersState();
     }
 
     public void dragButton(PieceView pieceView) {
@@ -77,7 +80,7 @@ public class PieceController {
             Dragboard db = e.getDragboard();
             sourceTileView = (TileView) (draggingPieceView.getParent());
             Move move = new Move(sourceTileView.getRow(), sourceTileView.getCol(), targetTileView.getRow(), targetTileView.getCol());
-            if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move)) {
+            if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move, currentCheckersState)) {
                 completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
                 e.setDropCompleted(true);
                 draggingPieceView.setOpacity(100);
@@ -100,7 +103,7 @@ public class PieceController {
 
     private void aiMove() {
         if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
-            List<Move> moves = checkersBoard.generateMoves(checkersBoard.getAiPlayer());
+            List<Move> moves = checkersBoard.generateMoves(checkersBoard.getAiPlayer(), currentCheckersState);
             Move move = moves.get(new Random().nextInt(moves.size()));
 
             TileView sourceTileView = getTileView(move.getSourceRow(), move.getSourceCol());
@@ -123,14 +126,14 @@ public class PieceController {
     }
 
     private void completePieceViewMove(Move move, TileView sourceTileView, TileView targetTileView, PieceView pieceView) {
-        checkersBoard.completeMove(move);
+        checkersBoard.completeMove(move, currentCheckersState);
         sourceTileView.getChildren().remove(pieceView);
         targetTileView.getChildren().add(pieceView);
         logArea.setText(logArea.getText() + String.format("\n %s move from %d,%d to %d,%d!", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
         if (move.isCapturingMove()) {
             capturePieceView(move.getMiddleRow(), move.getMiddleCol());
             logArea.setText(logArea.getText() + String.format("\n Captured %s piece at %d,%d!", checkersBoard.getNextPlayer().getPieceType().toString(), move.getMiddleRow(), move.getMiddleCol()));
-            move.setPossibleJumpMoves(checkersBoard.getPossibleJumpMoves(move));
+            move.setPossibleJumpMoves(checkersBoard.getPossibleJumpMoves(move, currentCheckersState));
             if (move.hasPossibleJumpMoves()) {
                 if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
                     //automaticaly do ai moves
@@ -170,7 +173,7 @@ public class PieceController {
     }
 
     private void switchPlayer() {
-        if (checkersBoard.getCurrentCheckersState().isGameOver()) {
+        if (currentCheckersState.isGameOver()) {
             currentPlayerView.gameOver();
         } else {
             checkersBoard.switchCurrentPlayer();

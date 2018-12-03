@@ -83,20 +83,20 @@ public class CheckersBoard {
         return null;
     }
 
-    public boolean isMoveValid(Move move) {
-        Piece piece = currentCheckersState.getPiece(move.getSourceRow(), move.getSourceCol());
+    public boolean isMoveValid(Move move, CheckersState checkersState) {
+        Piece piece = checkersState.getPiece(move.getSourceRow(), move.getSourceCol());
         if (!isLightTile(move.getTargetRow(), move.getTargetCol())) {
 
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 1 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir()) || piece.isKing())) {
-                if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
+                if (!checkersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
                     move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
                     return true;
                 }
             }
 
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 2 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir() * 2) || piece.isKing())) {
-                if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
-                    if (!currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
+                if (checkersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && checkersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
+                    if (!checkersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
                         move.setCapturingMove();
                         move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
                         return true;
@@ -114,17 +114,17 @@ public class CheckersBoard {
         return col % 2 != 0;
     }
 
-    public List<Move> generateMoves(Player player) {
+    public List<Move> generateMoves(Player player, CheckersState checkersState) {
         int direction = player.getPieceType().getMoveDir();
         List<Move> everyMove = new ArrayList<>();
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                if (currentCheckersState.hasPiece(row, col) && currentCheckersState.getPiece(row, col).getPieceType() == player.getPieceType()) {
+                if (checkersState.hasPiece(row, col) && checkersState.getPiece(row, col).getPieceType() == player.getPieceType()) {
                     everyMove.add(new Move(row, col, (row + direction), (col + 1)));
                     everyMove.add(new Move(row, col, (row + direction), (col - 1)));
                     everyMove.add(new Move(row, col, (row + (direction * 2)), (col + 2)));
                     everyMove.add(new Move(row, col, (row + (direction * 2)), (col - 2)));
-                    if (currentCheckersState.getPiece(row, col).isKing()) {
+                    if (checkersState.getPiece(row, col).isKing()) {
                         //Kings can move in backwards
                         everyMove.add(new Move(row, col, (row - direction), (col + 1)));
                         everyMove.add(new Move(row, col, (row - direction), (col - 1)));
@@ -137,17 +137,17 @@ public class CheckersBoard {
         List<Move> possibleMoves = everyMove.stream()
                 .filter(move -> move.getTargetRow() >= 0 && move.getTargetRow() < numRows)
                 .filter(move -> move.getTargetCol() >= 0 && move.getTargetCol() < numCols)
-                .filter(this::isMoveValid)
+                .filter(move -> isMoveValid(move, checkersState))
                 .collect(Collectors.toList());
         return possibleMoves;
     }
 
-    public void completeMove(Move move) {
-        Piece piece = currentCheckersState.getPiece(move.getSourceRow(), move.getSourceCol());
-        currentCheckersState.setPiece(move.getTargetRow(), move.getTargetCol(), piece);
-        currentCheckersState.setPiece(move.getSourceRow(), move.getSourceCol(), null);
-        if (currentCheckersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && currentCheckersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
-            currentCheckersState.setPiece(move.getMiddleRow(), move.getMiddleCol(), null);
+    public void completeMove(Move move, CheckersState checkersState) {
+        Piece piece = checkersState.getPiece(move.getSourceRow(), move.getSourceCol());
+        checkersState.setPiece(move.getTargetRow(), move.getTargetCol(), piece);
+        checkersState.setPiece(move.getSourceRow(), move.getSourceCol(), null);
+        if (checkersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && checkersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
+            checkersState.setPiece(move.getMiddleRow(), move.getMiddleCol(), null);
         }
         if (move.isCrowningMove()) {
             piece.crown();
@@ -167,8 +167,8 @@ public class CheckersBoard {
         return false;
     }
 
-    public List<Move> getPossibleJumpMoves(Move move) {
-        List<Move> possibleMoves = generateMoves(getCurrentPlayer());
+    public List<Move> getPossibleJumpMoves(Move move, CheckersState checkersState) {
+        List<Move> possibleMoves = generateMoves(getCurrentPlayer(), checkersState);
         possibleMoves = possibleMoves.stream()
                 .filter(Move::isCapturingMove)
                 .filter(nextMove -> nextMove.getSourceRow() == move.getTargetRow() && nextMove.getSourceCol() == move.getTargetCol())
