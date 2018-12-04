@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -117,6 +116,7 @@ public class PieceController {
                 bestMove = possibleMove;
             }
         }
+        System.out.println("Best move score is " + alpha);
         return bestMove;
     }
 

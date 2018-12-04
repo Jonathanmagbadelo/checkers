@@ -48,29 +48,16 @@ public class CheckersState {
         return boardState[row][col];
     }
 
-    public int getStateEvaluation1(Player currentPlayer) {
-        int blackPiecesScore = 0;
-        int redPiecesScore = 0;
-
-        for(Piece piece : currentBlackPieces){
-            blackPiecesScore += piece.isKing() ? 3 : 1;
+    public int getStateEvaluation(Player currentPlayer){
+        if(!isEndGame()){
+            return normalStateEvalutation(currentPlayer);
         }
 
-        for(Piece piece : currentRedPieces){
-            redPiecesScore += piece.isKing() ? 3 : 1;
-        }
+        return endGameStateEvaluation(currentPlayer);
 
-
-        if (currentPlayer.getPieceType() == PieceType.BLACK) {
-            redPiecesScore = redPiecesScore * -1;
-        } else {
-            blackPiecesScore = blackPiecesScore * -1;
-        }
-
-        return redPiecesScore + blackPiecesScore;
     }
 
-    public int getStateEvaluation(Player currentPlayer){
+    private int normalStateEvalutation(Player currentPlayer){
         int score = 0;
         for(int row = 0; row < 8; row++){
             for(int col = 0; col < 8; col++){
@@ -88,6 +75,11 @@ public class CheckersState {
             }
         }
         return score;
+    }
+
+    //TODO
+    private int endGameStateEvaluation(Player currentPlayer){
+        return 0;
     }
 
     public boolean isGameOver() {
@@ -118,6 +110,13 @@ public class CheckersState {
 
     public void setChildStates(ArrayList<CheckersState> childStates){
         this.childStates = childStates;
+    }
+
+    public boolean isEndGame(){
+        updateCurrentPieces();
+        long blackKingCount = currentBlackPieces.stream().filter(Piece::isKing).count();
+        long redKingCount = currentRedPieces.stream().filter(Piece::isKing).count();
+        return blackKingCount == currentBlackPieces.size() && redKingCount == currentRedPieces.size();
     }
 
 }
