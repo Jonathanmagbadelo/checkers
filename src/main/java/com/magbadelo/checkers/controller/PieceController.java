@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Component
 public class PieceController {
@@ -83,17 +84,20 @@ public class PieceController {
             Dragboard db = e.getDragboard();
             sourceTileView = (TileView) (draggingPieceView.getParent());
             Move move = new Move(sourceTileView.getRow(), sourceTileView.getCol(), targetTileView.getRow(), targetTileView.getCol());
+            List<Move> possibleJumpMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState).stream().filter(Move::isCapturingMove).collect(Collectors.toList());
             if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move, currentCheckersState)) {
-                completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
-                e.setDropCompleted(true);
-                draggingPieceView.setOpacity(100);
-                draggingPieceView = null;
+                if(!move.isCapturingMove() && !possibleJumpMoves.isEmpty()){
+                    logArea.setText(logArea.getText() + "\n Player MUST capture!");
+                    showPossibleJumpMoveTileViews(possibleJumpMoves);
+                } else{
+                    completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
+                }
             } else {
                 logArea.setText(logArea.getText() + String.format("\n Move from %d,%d is invalid to %d,%d!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
-                e.setDropCompleted(true);
-                draggingPieceView.setOpacity(100);
-                draggingPieceView = null;
             }
+            e.setDropCompleted(true);
+            draggingPieceView.setOpacity(100);
+            draggingPieceView = null;
             FxTimer.runLater(
                     Duration.ofMillis(10), () -> {
                         if (playerFinishedMove) {
@@ -108,9 +112,13 @@ public class PieceController {
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
         Move bestMove = possibleMoves.get(0);
+        List<Move> capturingMoves = possibleMoves.stream().filter(Move::isCapturingMove).collect(Collectors.toList());
+        if(!capturingMoves.isEmpty()){
+            possibleMoves = capturingMoves;
+        }
         for (Move possibleMove : possibleMoves) {
             CheckersState checkersState = new CheckersState(currentCheckersState);
-            int eval = minMax.negaMax(checkersState, 10, false, beta, alpha);
+            int eval = minMax.negaMax(checkersState, 30, false, beta, alpha);
             if( eval > alpha){
                 alpha = eval;
                 bestMove = possibleMove;

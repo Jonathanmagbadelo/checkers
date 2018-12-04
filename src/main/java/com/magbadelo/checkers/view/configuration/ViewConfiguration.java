@@ -138,8 +138,8 @@ public class ViewConfiguration {
                 ".text-area .scroll-pane .content{" +
                 "    -fx-background-color: transparent;}");
         logArea.setEditable(false);
-        logArea.setFocusTraversable(false);
-        logArea.setMouseTransparent(true);
+        //logArea.setFocusTraversable(false);
+        //logArea.setMouseTransparent(true);
         return logArea;
     }
 
