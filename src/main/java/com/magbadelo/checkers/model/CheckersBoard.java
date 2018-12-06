@@ -93,6 +93,7 @@ public class CheckersBoard {
                     move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
                     return true;
                 }
+
             }
 
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 2 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir() * 2) || piece.isKing())) {
@@ -104,8 +105,24 @@ public class CheckersBoard {
                     }
                 }
             }
+
+            setInvalidMoveReason(move);
+
+        } else {
+            move.setInvalidReason("You can't move to a light tile");
         }
+
         return false;
+    }
+
+    private void setInvalidMoveReason(Move move) {
+        if (move.getTargetRow() - move.getSourceRow() > -1) {
+            move.setInvalidReason("Pawns can only move forward");
+        } else if (currentCheckersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
+            move.setInvalidReason(String.format("There is already a piece at %d,%d", move.getTargetRow(), move.getTargetCol()));
+        } else if(move.getTargetRow() - move.getSourceRow() < -1) {
+            move.setInvalidReason("Can't move more than one tile, \n unless its a capture move!");
+        }
     }
 
     private boolean isLightTile(int row, int col) {
@@ -184,7 +201,7 @@ public class CheckersBoard {
         return possibleMoves;
     }
 
-    public boolean isGameOver(){
+    public boolean isGameOver() {
         //checks if pieces are gone
         List<Move> possibleMoves = generateMoves(getNextPlayer(), getCurrentCheckersState());
         return getCurrentCheckersState().isGameOver() || Objects.isNull(possibleMoves);

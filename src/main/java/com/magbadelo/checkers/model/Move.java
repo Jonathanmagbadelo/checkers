@@ -11,6 +11,7 @@ public class Move {
     private boolean isCapturingMove;
     private boolean isCrowningMove;
     private List<Move> possibleJumpMoves;
+    private String invalidReason;
 
     public Move(int sourceRow, int sourceCol, int targetRow, int targetCol){
         this.sourceRow = sourceRow;
@@ -71,5 +72,13 @@ public class Move {
 
     public boolean hasPossibleJumpMoves() {
         return possibleJumpMoves != null;
+    }
+
+    public String getInvalidReason() {
+        return invalidReason;
+    }
+
+    public void setInvalidReason(String invalidReason) {
+        this.invalidReason = invalidReason;
     }
 }

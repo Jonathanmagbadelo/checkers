@@ -38,6 +38,7 @@ public class PieceController {
     private TextArea logArea;
     private CheckersState currentCheckersState;
     private NegaMax minMax;
+    private boolean showPossibleMoves = true;
 
     @Value("${checkerboard.piece.stroke.color.one}")
     private String pieceStrokeOne;
@@ -88,12 +89,13 @@ public class PieceController {
             if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move, currentCheckersState)) {
                 if(!move.isCapturingMove() && !possibleJumpMoves.isEmpty()){
                     logArea.setText(logArea.getText() + "\n Player MUST capture!");
-                    showPossibleJumpMoveTileViews(possibleJumpMoves);
+                    showPossibleMoveTileViews(possibleJumpMoves);
                 } else{
                     completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
                 }
             } else {
-                logArea.setText(logArea.getText() + String.format("\n Move from %d,%d is invalid to %d,%d!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
+                //logArea.setText(logArea.getText() + String.format("\n Move from %d,%d is invalid to %d,%d!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
+                logArea.setText(logArea.getText() + "\n" + move.getInvalidReason());
             }
             e.setDropCompleted(true);
             draggingPieceView.setOpacity(100);
@@ -169,7 +171,7 @@ public class PieceController {
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
                     resetTileViewColors();
                     if (!move.isCrowningMove()) {
-                        showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
+                        showPossibleMoveTileViews(move.getPossibleJumpMoves());
                         FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
                     }
                 } else {
@@ -177,7 +179,7 @@ public class PieceController {
                     if (!move.isCrowningMove()) {
                         logArea.setText(logArea.getText() + "\n Player MUST capture!");
                         resetTileViewColors();
-                        showPossibleJumpMoveTileViews(move.getPossibleJumpMoves());
+                        showPossibleMoveTileViews(move.getPossibleJumpMoves());
                         playerFinishedMove = false;
                     }
                 }
@@ -198,6 +200,10 @@ public class PieceController {
                 playerFinishedMove = true;
             }
         }
+
+        if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
+            resetTileViewColors();
+        }
     }
 
     private void switchPlayer() {
@@ -208,12 +214,17 @@ public class PieceController {
             String strokeColor = checkersBoard.getCurrentPlayer().getPieceType().toString().equals("Red") ? pieceStrokeOne : pieceStrokeTwo;
             currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor(), strokeColor);
             currentPlayerView.nextTurn();
+            if(!checkersBoard.getCurrentPlayer().isAIPlayer() && showPossibleMoves){
+                List<Move> possibleMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState);
+                List<Move> possibleJumpMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState).stream().filter(Move::isCapturingMove).collect(Collectors.toList());
+                showPossibleMoveTileViews(possibleJumpMoves.isEmpty() ? possibleMoves : possibleJumpMoves);
+            }
         }
 
     }
 
-    public void showPossibleJumpMoveTileViews(List<Move> possibleJumpMoves) {
-        possibleJumpMoves.forEach(move -> {
+    public void showPossibleMoveTileViews(List<Move> possibleMoves) {
+        possibleMoves.forEach(move -> {
             TileView tileView = getTileView(move.getTargetRow(), move.getTargetCol());
             Rectangle tile = ((Rectangle) tileView.getChildren().get(0));
             tile.setFill(Color.GREENYELLOW);
