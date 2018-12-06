@@ -16,7 +16,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * The type View configuration.
+ * The View configuration. This class creates all the bean singletons used in the frontend of the checkers game
  */
 @Configuration
 public class ViewConfiguration {

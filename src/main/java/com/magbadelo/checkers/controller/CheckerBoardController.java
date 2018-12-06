@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.stream.IntStream;
 
 /**
- * The type Checker board controller.
+ * The Checker board controller.
  */
 @Component
 public class CheckerBoardController {

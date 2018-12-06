@@ -9,7 +9,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * The type Checkers board.
+ * Where most of the game logic occurs, this class takes care of validating moves, generating moves,
+ * checking if a game is over, and initialising the checkerboard.
  */
 @Component
 public class CheckersBoard {

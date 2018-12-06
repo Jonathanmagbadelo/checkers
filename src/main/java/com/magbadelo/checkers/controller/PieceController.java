@@ -27,7 +27,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * The type Piece controller.
+ * The Piece controller.
  */
 @Component
 public class PieceController {
@@ -261,7 +261,7 @@ public class PieceController {
     }
 
     /**
-     * Reset.
+     * Reset the game
      */
     public void reset() {
         playerFinishedMove = false;

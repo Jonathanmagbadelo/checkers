@@ -1,7 +1,7 @@
 package com.magbadelo.checkers.model;
 
 /**
- * The type Player.
+ * The Player class keeps track it the player is the AI or not and what pieceType they control.
  */
 public class Player {
     private final boolean isAIPlayer;

@@ -26,7 +26,7 @@ public class CheckerBoardView {
      * @param rightVbox    the right vbox
      * @param logArea      the log area
      * @param logLabel     the log label
-     * @param difficulty   the difficulty
+     * @param difficulty   the difficulty used to change the depth of negamax
      * @param toggleButton the toggle button
      */
     @Autowired

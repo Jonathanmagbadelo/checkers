@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- * The type Checkers state.
+ * The Checkers state class represents the checkerboard at a given point in time.
  */
 public class CheckersState {
     private Piece[][] boardState;

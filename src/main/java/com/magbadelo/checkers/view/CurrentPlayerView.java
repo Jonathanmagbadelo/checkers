@@ -8,7 +8,7 @@ import javafx.scene.shape.Circle;
 import org.springframework.stereotype.Component;
 
 /**
- * The type Current player view.
+ * The Current player view.
  */
 @Component
 public class CurrentPlayerView extends VBox {
@@ -51,7 +51,7 @@ public class CurrentPlayerView extends VBox {
     }
 
     /**
-     * Next turn.
+     * Displays the name of the next player.
      */
     public void nextTurn(){
         currentTurn = currentTurn.equals(playerTurn) ? aiTurn : playerTurn;
@@ -59,7 +59,7 @@ public class CurrentPlayerView extends VBox {
     }
 
     /**
-     * Game over.
+     * Presents a game over message to the user.
      *
      * @param endGameMessage the end game message
      */

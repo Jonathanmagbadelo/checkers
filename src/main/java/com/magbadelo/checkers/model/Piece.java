@@ -1,7 +1,7 @@
 package com.magbadelo.checkers.model;
 
 /**
- * The type Piece.
+ * The Piece class represents a checkers piece.
  */
 public class Piece {
     private boolean isKing;

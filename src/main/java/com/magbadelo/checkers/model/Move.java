@@ -3,7 +3,7 @@ package com.magbadelo.checkers.model;
 import java.util.List;
 
 /**
- * The type Move.
+ * The Move class represents a move a player could potentially make whether it is valid or not.
  */
 public class Move {
 

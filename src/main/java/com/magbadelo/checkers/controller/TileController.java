@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * The type Tile controller.
+ * The Tile controller.
  */
 @Component
 public class TileController {
