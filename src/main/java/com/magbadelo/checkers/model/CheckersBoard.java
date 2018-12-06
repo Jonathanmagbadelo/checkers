@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -73,11 +74,11 @@ public class CheckersBoard {
 
     private Piece makePiece(boolean isLightTile, int row, int col) {
         if (row <= 2 && !isLightTile) {
-            return new Piece(false, PieceType.RED);
+            return new Piece(false, PieceType.RED, row, col);
         }
 
         if (row >= 5 && !isLightTile) {
-            return new Piece(false, PieceType.BLACK);
+            return new Piece(false, PieceType.BLACK, row, col);
         }
 
         return null;
@@ -181,6 +182,12 @@ public class CheckersBoard {
         }
 
         return possibleMoves;
+    }
+
+    public boolean isGameOver(){
+        //checks if pieces are gone
+        List<Move> possibleMoves = generateMoves(getCurrentPlayer(), getCurrentCheckersState());
+        return getCurrentCheckersState().isGameOver() || Objects.isNull(possibleMoves);
     }
 
 }
