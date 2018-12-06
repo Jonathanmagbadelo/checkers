@@ -20,7 +20,7 @@ public class NegaMax {
         this.minPlayer = checkersBoard.getHumanPlayer();
     }
 
-    public ArrayList<CheckersState> generateChildStates(CheckersState checkersState, boolean isMaxPlayer) {
+    private ArrayList<CheckersState> generateChildStates(CheckersState checkersState, boolean isMaxPlayer) {
         List<Move> possibleMoves = checkersBoard.generateMoves(isMaxPlayer ? maxPlayer : minPlayer, checkersState);
         ArrayList<CheckersState> childStates = new ArrayList<>();
 
@@ -40,13 +40,11 @@ public class NegaMax {
                     traverseJumpMoves(move, checkerStateCopy, childStates);
                 }
             }
-
         }
-
         return childStates;
     }
 
-    public void traverseJumpMoves(Move move, CheckersState checkersState, ArrayList<CheckersState> childStates) {
+    private void traverseJumpMoves(Move move, CheckersState checkersState, ArrayList<CheckersState> childStates) {
         if (!move.hasPossibleJumpMoves()) {
             childStates.add(checkersState);
         } else {
@@ -58,28 +56,20 @@ public class NegaMax {
         }
     }
 
-    public int negaMax(CheckersState checkersState, int depth, boolean isAIPlayer, int alpha, int beta) {
+    public double negaMax(CheckersState checkersState, int depth, boolean isAIPlayer, double alpha, double beta) {
         if (depth == 0 || checkersState.isGameOver()) {
             return checkersState.getStateEvaluation(isAIPlayer ? maxPlayer : minPlayer);
         }
         CheckersState checkersStateCopy = new CheckersState(checkersState);
         ArrayList<CheckersState> childStates = generateChildStates(checkersStateCopy, isAIPlayer);
-        int eval = Integer.MIN_VALUE;
+        double eval = Integer.MIN_VALUE;
         for (CheckersState childState : childStates) {
             CheckersState childStateCopy = new CheckersState(childState);
-//            int eval = -negaMax(childStateCopy, depth - 1, !isAIPlayer, -beta, -alpha);
-//            if (eval >= beta) {
-//                return eval;
-//            }
-//            if (eval > alpha) {
-//                alpha = eval;
-//            }
-            eval = Math.max(eval, -negaMax(checkersStateCopy, depth - 1, !isAIPlayer, -beta, -alpha));
+            eval = Math.max(eval, -negaMax(childStateCopy, depth - 1, !isAIPlayer, -beta, -alpha));
             alpha = Math.max(eval, alpha);
             if (alpha > beta)
                 break;
         }
-        //return alpha;
         return eval;
     }
 }

@@ -1,7 +1,6 @@
 package com.magbadelo.checkers.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,11 +13,8 @@ public class CheckersBoard {
     private Player humanPlayer;
     private Player aiPlayer;
     private Player currentPlayer;
-
     private int numRows = 8;
-
     private int numCols = 8;
-
     private CheckersState currentCheckersState;
 
     @Autowired

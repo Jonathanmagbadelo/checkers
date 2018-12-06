@@ -93,13 +93,10 @@ public class CheckerBoardController {
     }
 
     private void resetGame() {
-        checkerBoardView.getBoard().getChildren().stream().filter(tile -> tile instanceof TileView).forEach(tile -> {
-            ((TileView) tile).getChildren().removeIf(piece -> piece instanceof PieceView);
-        });
+        checkerBoardView.getBoard().getChildren().stream().filter(tile -> tile instanceof TileView).forEach(tile -> ((TileView) tile).getChildren().removeIf(piece -> piece instanceof PieceView));
         checkersBoard.reset();
         tileController.resetTileViewColors();
         pieceController.reset();
-        System.out.println("Reset game!");
     }
 
 }

@@ -72,10 +72,9 @@ public class PieceController {
                         break;
                     case "Medium":
                         depth = 2;
-                        System.out.println("HAI");
                         break;
                     case "Hard":
-                        depth = 3;
+                        depth = 4;
                         break;
                 }
             }
@@ -134,9 +133,9 @@ public class PieceController {
         });
     }
 
-    public Move getNegaMaxMove(List<Move> possibleMoves) {
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
+    private Move getNegaMaxMove(List<Move> possibleMoves) {
+        double alpha = Integer.MIN_VALUE;
+        double beta = Integer.MAX_VALUE;
         Move bestMove = possibleMoves.get(0);
         List<Move> capturingMoves = possibleMoves.stream().filter(Move::isCapturingMove).collect(Collectors.toList());
         if (!capturingMoves.isEmpty()) {
@@ -144,7 +143,7 @@ public class PieceController {
         }
         for (Move possibleMove : possibleMoves) {
             CheckersState checkersState = new CheckersState(currentCheckersState);
-            int eval = negaMax.negaMax(checkersState, depth, true, alpha, beta);
+            double eval = negaMax.negaMax(checkersState, depth, true, alpha, beta);
             if (eval >= alpha) {
                 alpha = eval;
                 bestMove = possibleMove;
@@ -184,18 +183,14 @@ public class PieceController {
             move.setPossibleJumpMoves(checkersBoard.getPossibleJumpMoves(move, currentCheckersState));
             if (move.hasPossibleJumpMoves()) {
                 if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
-                    //automaticaly do ai moves
-                    //issue here stop recursion
+                    //issue here recursion stops after two jumps :(
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
                     tileController.resetTileViewColors();
                     if (!move.isCrowningMove()) {
                         tileController.showPossibleMoveTileViews(move.getPossibleJumpMoves());
-                        FxTimer.runLater(Duration.ofMillis(1500), () -> {
-                            completePieceViewMove(nextMove, tileController.getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), tileController.getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);
-                        });
+                        FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, tileController.getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), tileController.getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
                     }
                 } else {
-                    //human does what it whats
                     if (!move.isCrowningMove()) {
                         logArea.setText(logArea.getText() + "\n Player MUST capture!");
                         tileController.resetTileViewColors();
@@ -239,7 +234,6 @@ public class PieceController {
                 tileController.showPossibleMoveTileViews(possibleJumpMoves.isEmpty() ? possibleMoves : possibleJumpMoves);
             }
         }
-
     }
 
     public void reset() {
