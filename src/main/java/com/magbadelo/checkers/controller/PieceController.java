@@ -220,6 +220,7 @@ public class PieceController {
     public void reset(){
         playerFinishedMove = false;
         sourceTileView = null;
+        currentCheckersState = checkersBoard.getCurrentCheckersState();
         logArea.clear();
     }
 

@@ -15,10 +15,8 @@ public class CheckersBoard {
     private Player aiPlayer;
     private Player currentPlayer;
 
-    @Value("${checkerboard.num.rows}")
     private int numRows = 8;
 
-    @Value("${checkerboard.num.cols}")
     private int numCols = 8;
 
     private CheckersState currentCheckersState;
@@ -59,7 +57,7 @@ public class CheckersBoard {
 
     public void reset(){
         currentPlayer = getHumanPlayer();
-        this.currentCheckersState = new CheckersState(numRows, numCols);
+        currentCheckersState = new CheckersState(numRows, numCols);
         initialise();
         currentCheckersState.updateCurrentPieces();
     }
