@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * The type Checkers board.
+ */
 @Component
 public class CheckersBoard {
     private Player humanPlayer;
@@ -17,6 +20,9 @@ public class CheckersBoard {
     private int numCols = 8;
     private CheckersState currentCheckersState;
 
+    /**
+     * Instantiates a new Checkers board.
+     */
     @Autowired
     public CheckersBoard() {
         this.aiPlayer = new Player(true);
@@ -27,30 +33,61 @@ public class CheckersBoard {
         currentCheckersState.updateCurrentPieces();
     }
 
+    /**
+     * Gets human player.
+     *
+     * @return the human player
+     */
     public Player getHumanPlayer() {
         return humanPlayer;
     }
 
+    /**
+     * Gets ai player.
+     *
+     * @return the ai player
+     */
     public Player getAiPlayer() {
         return aiPlayer;
     }
 
+    /**
+     * Switch current player.
+     */
     public void switchCurrentPlayer() {
         this.currentPlayer = getNextPlayer();
     }
 
+    /**
+     * Gets next player.
+     *
+     * @return the next player
+     */
     public Player getNextPlayer() {
         return currentPlayer.isAIPlayer() ? getHumanPlayer() : getAiPlayer();
     }
 
+    /**
+     * Gets current player.
+     *
+     * @return the current player
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * Gets current checkers state.
+     *
+     * @return the current checkers state
+     */
     public CheckersState getCurrentCheckersState() {
         return currentCheckersState;
     }
 
+    /**
+     * Reset.
+     */
     public void reset(){
         currentPlayer = getHumanPlayer();
         currentCheckersState = new CheckersState(numRows, numCols);
@@ -82,6 +119,13 @@ public class CheckersBoard {
         return null;
     }
 
+    /**
+     * Is move valid boolean.
+     *
+     * @param move          the move
+     * @param checkersState the checkers state
+     * @return the boolean
+     */
     public boolean isMoveValid(Move move, CheckersState checkersState) {
         Piece piece = checkersState.getPiece(move.getSourceRow(), move.getSourceCol());
         if (!isLightTile(move.getTargetRow(), move.getTargetCol())) {
@@ -130,7 +174,14 @@ public class CheckersBoard {
         return col % 2 != 0;
     }
 
-    //successor function
+    /**
+     * Generate moves list.
+     *
+     * @param player        the player
+     * @param checkersState the checkers state
+     * @return the list
+     */
+//successor function
     public List<Move> generateMoves(Player player, CheckersState checkersState) {
         int direction = player.getPieceType().getMoveDir();
         List<Move> everyMove = new ArrayList<>();
@@ -159,6 +210,12 @@ public class CheckersBoard {
         return possibleMoves;
     }
 
+    /**
+     * Complete move.
+     *
+     * @param move          the move
+     * @param checkersState the checkers state
+     */
     public void completeMove(Move move, CheckersState checkersState) {
         Piece piece = checkersState.getPiece(move.getSourceRow(), move.getSourceCol());
         checkersState.setPiece(move.getTargetRow(), move.getTargetCol(), piece);
@@ -172,6 +229,13 @@ public class CheckersBoard {
         checkersState.updateCurrentPieces();
     }
 
+    /**
+     * Is crowning move boolean.
+     *
+     * @param piece     the piece
+     * @param targetRow the target row
+     * @return the boolean
+     */
     public boolean isCrowningMove(Piece piece, int targetRow) {
         if (!piece.isKing()) {
             if (piece.getPieceType() == PieceType.BLACK && targetRow == 0) {
@@ -185,6 +249,13 @@ public class CheckersBoard {
         return false;
     }
 
+    /**
+     * Gets possible jump moves.
+     *
+     * @param move          the move
+     * @param checkersState the checkers state
+     * @return the possible jump moves
+     */
     public List<Move> getPossibleJumpMoves(Move move, CheckersState checkersState) {
         List<Move> possibleMoves = generateMoves(getCurrentPlayer(), checkersState);
         possibleMoves = possibleMoves.stream()
@@ -199,6 +270,11 @@ public class CheckersBoard {
         return possibleMoves;
     }
 
+    /**
+     * Is game over boolean.
+     *
+     * @return the boolean
+     */
     public boolean isGameOver() {
         //checks if pieces are gone
         List<Move> possibleMoves = generateMoves(getNextPlayer(), getCurrentCheckersState());

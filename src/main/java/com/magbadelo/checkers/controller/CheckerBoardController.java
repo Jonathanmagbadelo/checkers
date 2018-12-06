@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.IntStream;
 
+/**
+ * The type Checker board controller.
+ */
 @Component
 public class CheckerBoardController {
 
@@ -38,6 +41,15 @@ public class CheckerBoardController {
     @Value("${checkerboard.piece.radius}")
     private double pieceRadius;
 
+    /**
+     * Instantiates a new Checker board controller.
+     *
+     * @param checkerBoardView  the checker board view
+     * @param checkersBoard     the checkers board
+     * @param pieceController   the piece controller
+     * @param currentPlayerView the current player view
+     * @param tileController    the tile controller
+     */
     @Autowired
     public CheckerBoardController(CheckerBoardView checkerBoardView, CheckersBoard checkersBoard, PieceController pieceController, CurrentPlayerView currentPlayerView, TileController tileController) {
         this.checkerBoardView = checkerBoardView;
@@ -52,6 +64,11 @@ public class CheckerBoardController {
         setTileViewHandles();
     }
 
+    /**
+     * Gets checker board view.
+     *
+     * @return the checker board view
+     */
     public CheckerBoardView getCheckerBoardView() {
         return checkerBoardView;
     }

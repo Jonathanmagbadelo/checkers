@@ -4,18 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * The type Checkers state.
+ */
 public class CheckersState {
     private Piece[][] boardState;
     private List<Piece> currentBlackPieces;
     private List<Piece> currentRedPieces;
 
+    /**
+     * Instantiates a new Checkers state.
+     *
+     * @param rows the rows
+     * @param cols the cols
+     */
     public CheckersState(int rows, int cols) {
         this.boardState = new Piece[rows][cols];
         this.currentBlackPieces = new ArrayList<>();
         this.currentRedPieces = new ArrayList<>();
     }
 
-    //Copy Constructor
+    /**
+     * Instantiates a new Checkers state.
+     *
+     * @param checkersState the checkers state
+     */
+//Copy Constructor
     public CheckersState(CheckersState checkersState) {
         int length = checkersState.getBoardState().length;
         this.boardState = new Piece[length][length];
@@ -36,6 +50,13 @@ public class CheckersState {
         return boardState;
     }
 
+    /**
+     * Sets piece.
+     *
+     * @param row   the row
+     * @param col   the col
+     * @param piece the piece
+     */
     public void setPiece(int row, int col, Piece piece) {
         boardState[row][col] = piece;
         if (piece != null) {
@@ -45,14 +66,34 @@ public class CheckersState {
 
     }
 
+    /**
+     * Has piece boolean.
+     *
+     * @param row the row
+     * @param col the col
+     * @return the boolean
+     */
     public boolean hasPiece(int row, int col) {
         return boardState[row][col] != null;
     }
 
+    /**
+     * Gets piece.
+     *
+     * @param row the row
+     * @param col the col
+     * @return the piece
+     */
     public Piece getPiece(int row, int col) {
         return boardState[row][col];
     }
 
+    /**
+     * Gets state evaluation.
+     *
+     * @param currentPlayer the current player
+     * @return the state evaluation
+     */
     public double getStateEvaluation(Player currentPlayer) {
         if (!isEndGame()) {
             return normalStateEvaluation(currentPlayer);
@@ -96,11 +137,19 @@ public class CheckersState {
         return currentPlayerPieces.size() > opponentPieces.size() ?  (1000.0 * (1.0 / totalDistance)) :  totalDistance;
     }
 
+    /**
+     * Is game over boolean.
+     *
+     * @return the boolean
+     */
     public boolean isGameOver() {
         updateCurrentPieces();
         return currentRedPieces.size() == 0 || currentBlackPieces.size() == 0;
     }
 
+    /**
+     * Update current pieces.
+     */
     public void updateCurrentPieces() {
         currentRedPieces.clear();
         currentBlackPieces.clear();

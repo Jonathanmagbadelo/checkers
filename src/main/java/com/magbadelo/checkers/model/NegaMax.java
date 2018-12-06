@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Nega max.
+ */
 @Component
 public class NegaMax {
 
@@ -13,6 +16,11 @@ public class NegaMax {
     private Player maxPlayer;
     private Player minPlayer;
 
+    /**
+     * Instantiates a new Nega max.
+     *
+     * @param checkersBoard the checkers board
+     */
     @Autowired
     public NegaMax(CheckersBoard checkersBoard) {
         this.checkersBoard = checkersBoard;
@@ -56,6 +64,16 @@ public class NegaMax {
         }
     }
 
+    /**
+     * Nega max double.
+     *
+     * @param checkersState the checkers state
+     * @param depth         the depth
+     * @param isAIPlayer    the is ai player
+     * @param alpha         the alpha
+     * @param beta          the beta
+     * @return the double
+     */
     public double negaMax(CheckersState checkersState, int depth, boolean isAIPlayer, double alpha, double beta) {
         if (depth == 0 || checkersState.isGameOver()) {
             return checkersState.getStateEvaluation(isAIPlayer ? maxPlayer : minPlayer);

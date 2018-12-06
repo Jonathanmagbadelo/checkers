@@ -12,14 +12,23 @@ import javafx.scene.Scene;
 import org.springframework.context.ConfigurableApplicationContext;
 import javax.annotation.PostConstruct;
 
+/**
+ * The type Checkers application.
+ */
 @SpringBootApplication
 public class CheckersApplication extends Application {
     private ConfigurableApplicationContext springContext;
     private Parent rootNode;
 
+    /**
+     * The Checker board controller.
+     */
     @Autowired
     CheckerBoardController checkerBoardController;
 
+    /**
+     * Go.
+     */
     @PostConstruct
     public void go() {
         Platform.runLater(() -> {
@@ -35,6 +44,11 @@ public class CheckersApplication extends Application {
         });
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }

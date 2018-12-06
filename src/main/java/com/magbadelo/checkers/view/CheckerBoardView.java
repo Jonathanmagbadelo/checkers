@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+/**
+ * The type Checker board view.
+ */
 @Component
 public class CheckerBoardView {
     private GridPane board;
@@ -14,6 +17,18 @@ public class CheckerBoardView {
     private VBox leftVbox;
     private VBox rightVbox;
 
+    /**
+     * Instantiates a new Checker board view.
+     *
+     * @param board        the board
+     * @param hBox         the h box
+     * @param leftVbox     the left vbox
+     * @param rightVbox    the right vbox
+     * @param logArea      the log area
+     * @param logLabel     the log label
+     * @param difficulty   the difficulty
+     * @param toggleButton the toggle button
+     */
     @Autowired
     public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox, TextArea logArea, Label logLabel, ToggleGroup difficulty, ToggleButton toggleButton) {
         this.board = board;
@@ -25,6 +40,11 @@ public class CheckerBoardView {
         rightVbox.getChildren().addAll(logLabel, logArea);
     }
 
+    /**
+     * Create content parent.
+     *
+     * @return the parent
+     */
     public Parent createContent() {
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(board);
@@ -34,14 +54,29 @@ public class CheckerBoardView {
         return borderPane;
     }
 
+    /**
+     * Gets board.
+     *
+     * @return the board
+     */
     public GridPane getBoard() {
         return board;
     }
 
+    /**
+     * Gets h box.
+     *
+     * @return the h box
+     */
     public HBox getHBox() {
         return hBox;
     }
 
+    /**
+     * Gets left vbox.
+     *
+     * @return the left vbox
+     */
     public VBox getLeftVbox() {
         return leftVbox;
     }

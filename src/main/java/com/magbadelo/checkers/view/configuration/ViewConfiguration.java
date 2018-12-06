@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+/**
+ * The type View configuration.
+ */
 @Configuration
 public class ViewConfiguration {
     @Value("${checkerboard.tile.size}")
@@ -32,6 +35,11 @@ public class ViewConfiguration {
     @Value("${checkerboard.tile.darkColor}")
     private String darkColor;
 
+    /**
+     * Grid pane grid pane.
+     *
+     * @return the grid pane
+     */
     @Bean
     public GridPane gridPane() {
         GridPane gridPane = new GridPane();
@@ -47,6 +55,11 @@ public class ViewConfiguration {
         return gridPane;
     }
 
+    /**
+     * Top box h box.
+     *
+     * @return the h box
+     */
     @Bean
     public HBox topBox() {
         HBox hbox = new HBox();
@@ -93,6 +106,11 @@ public class ViewConfiguration {
         return hbox;
     }
 
+    /**
+     * Left vbox v box.
+     *
+     * @return the v box
+     */
     @Bean
     @Qualifier("LeftVbox")
     public VBox leftVbox() {
@@ -106,6 +124,11 @@ public class ViewConfiguration {
         return vBox;
     }
 
+    /**
+     * Right vbox v box.
+     *
+     * @return the v box
+     */
     @Bean
     @Qualifier("rightVbox")
     public VBox rightVbox() {
@@ -122,6 +145,11 @@ public class ViewConfiguration {
         return vBox;
     }
 
+    /**
+     * Log area text area.
+     *
+     * @return the text area
+     */
     @Bean
     public TextArea logArea() {
         TextArea logArea = new TextArea();
@@ -136,12 +164,22 @@ public class ViewConfiguration {
         return logArea;
     }
 
+    /**
+     * Log label label.
+     *
+     * @return the label
+     */
     @Bean
     public Label logLabel() {
         Label logLabel = new Label("Game Log");
         return logLabel;
     }
 
+    /**
+     * Difficulty toggle group.
+     *
+     * @return the toggle group
+     */
     @Bean
     public ToggleGroup difficulty() {
         final ToggleGroup group = new ToggleGroup();
@@ -159,6 +197,11 @@ public class ViewConfiguration {
         return group;
     }
 
+    /**
+     * Toggle switch toggle button.
+     *
+     * @return the toggle button
+     */
     @Bean
     public ToggleButton toggleSwitch() {
         ToggleButton toggleButton = new ToggleButton("Show Hints?");

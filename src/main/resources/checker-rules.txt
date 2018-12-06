@@ -1,11 +1,14 @@
-Men´s moves
+Checker Rules
 
-They move and capture only diagonally forwards.
+Pawn moves:
+Pawn move and capture only diagonally forwards.
 
-Kings moves
-
+Kings moves:
 They move and capture diagonally forwards or backwards, but they can´t jump over empty cells.
 
-Particularities about the end of the game
+Forced Captures:
+If a player is in a position to capture a piece, they must do so, even on any subsequent jump. If more than one capturing move is available the user decides.
 
-The game ends in a draw after doing 100 king moves in a row without advancing any man nor doing any capture.
+Particularities about the end of the game:
+If all of the pieces for a given player have been removed from the board, the game ends and the opposing player wins.
+Similarly if a player cannot make another valid move, the game is over and the opposing player wins

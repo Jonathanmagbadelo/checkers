@@ -7,6 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.springframework.stereotype.Component;
 
+/**
+ * The type Current player view.
+ */
 @Component
 public class CurrentPlayerView extends VBox {
     private Circle piece;
@@ -14,6 +17,9 @@ public class CurrentPlayerView extends VBox {
     private String aiTurn;
     private String currentTurn;
 
+    /**
+     * Instantiates a new Current player view.
+     */
     public CurrentPlayerView(){
         this.playerTurn = "Players Turn!";
         this.aiTurn = "AI's Turn";
@@ -32,17 +38,31 @@ public class CurrentPlayerView extends VBox {
         getChildren().addAll(piece, new Label(playerTurn));
     }
 
+    /**
+     * Set piece color.
+     *
+     * @param color  the color
+     * @param stroke the stroke
+     */
     public void setPieceColor(String color, String stroke){
         piece.setFill(Color.web(color));
         piece.setStroke(Color.web(stroke));
         piece.setStrokeWidth(3);
     }
 
+    /**
+     * Next turn.
+     */
     public void nextTurn(){
         currentTurn = currentTurn.equals(playerTurn) ? aiTurn : playerTurn;
         getChildren().set(1, new Label(currentTurn));
     }
 
+    /**
+     * Game over.
+     *
+     * @param endGameMessage the end game message
+     */
     public void gameOver(String endGameMessage){
         getChildren().set(1, new Label(endGameMessage));
     }

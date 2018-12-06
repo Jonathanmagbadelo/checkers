@@ -1,7 +1,16 @@
 package com.magbadelo.checkers.model;
 
+/**
+ * The enum Piece type.
+ */
 public enum PieceType {
-    RED(1), BLACK(-1);
+    /**
+     * Red piece type.
+     */
+    RED(1), /**
+     * Black piece type.
+     */
+    BLACK(-1);
 
     private final int moveDir;
 
@@ -9,6 +18,11 @@ public enum PieceType {
         this.moveDir = moveDir;
     }
 
+    /**
+     * Gets move dir.
+     *
+     * @return the move dir
+     */
     public int getMoveDir() {
         return moveDir;
     }
@@ -18,6 +32,11 @@ public enum PieceType {
         return moveDir == 1 ? "Red" : "Black";
     }
 
+    /**
+     * Get color string.
+     *
+     * @return the string
+     */
     public String getColor(){
         return moveDir == 1 ? "ED5564" : "434A54";
     }

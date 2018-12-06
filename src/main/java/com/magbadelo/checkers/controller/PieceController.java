@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+/**
+ * The type Piece controller.
+ */
 @Component
 public class PieceController {
     private final DataFormat pieceViewFormat = new DataFormat("PieceView");
@@ -47,6 +50,17 @@ public class PieceController {
     @Value("${checkerboard.piece.stroke.color.two}")
     private String pieceStrokeTwo;
 
+    /**
+     * Instantiates a new Piece controller.
+     *
+     * @param checkersBoard     the checkers board
+     * @param currentPlayerView the current player view
+     * @param logArea           the log area
+     * @param minMax            the min max
+     * @param tileController    the tile controller
+     * @param toggleButton      the toggle button
+     * @param difficulty        the difficulty
+     */
     @Autowired
     public PieceController(CheckersBoard checkersBoard, CurrentPlayerView currentPlayerView, TextArea logArea, NegaMax minMax, TileController tileController, ToggleButton toggleButton, ToggleGroup difficulty) {
         this.checkersBoard = checkersBoard;
@@ -81,6 +95,11 @@ public class PieceController {
         });
     }
 
+    /**
+     * Drag button.
+     *
+     * @param pieceView the piece view
+     */
     public void dragButton(PieceView pieceView) {
         pieceView.setOnDragDetected(e -> {
             if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
@@ -97,6 +116,11 @@ public class PieceController {
         });
     }
 
+    /**
+     * Add drop handling.
+     *
+     * @param targetTileView the target tile view
+     */
     public void addDropHandling(TileView targetTileView) {
         targetTileView.setOnDragOver(e -> {
             Dragboard db = e.getDragboard();
@@ -236,6 +260,9 @@ public class PieceController {
         }
     }
 
+    /**
+     * Reset.
+     */
     public void reset() {
         playerFinishedMove = false;
         sourceTileView = null;

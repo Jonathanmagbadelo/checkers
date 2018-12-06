@@ -10,16 +10,29 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * The type Tile controller.
+ */
 @Component
 public class TileController {
 
     private GridPane board;
 
+    /**
+     * Instantiates a new Tile controller.
+     *
+     * @param board the board
+     */
     @Autowired
     public TileController(GridPane board){
         this.board = board;
     }
 
+    /**
+     * Show possible move tile views.
+     *
+     * @param possibleMoves the possible moves
+     */
     public void showPossibleMoveTileViews(List<Move> possibleMoves) {
         possibleMoves.forEach(move -> {
             TileView tileView = getTileView(move.getTargetRow(), move.getTargetCol());
@@ -29,6 +42,9 @@ public class TileController {
         });
     }
 
+    /**
+     * Reset tile view colors.
+     */
     public void resetTileViewColors() {
         board.getChildren().stream()
                 .filter(node -> node instanceof TileView)
@@ -36,6 +52,13 @@ public class TileController {
                 .forEach(node -> ((Rectangle) (((TileView) node).getChildren().get(0))).setFill(Color.web("A85D5D")));
     }
 
+    /**
+     * Gets tile view.
+     *
+     * @param row the row
+     * @param col the col
+     * @return the tile view
+     */
     public TileView getTileView(int row, int col) {
         int index = (row * 8) + col;
         return (TileView) board.getChildren().get(index);
