@@ -57,7 +57,7 @@ public class PieceController {
         this.currentCheckersState = checkersBoard.getCurrentCheckersState();
         this.negaMax = minMax;
         this.showHints = false;
-        this.depth = 5;
+        this.depth = 1;
         toggleButton.setOnMousePressed(event -> showHints = !showHints);
         difficultyListener(difficulty);
     }
@@ -71,11 +71,11 @@ public class PieceController {
                         depth = 1;
                         break;
                     case "Medium":
-                        depth = 7;
+                        depth = 2;
                         System.out.println("HAI");
                         break;
                     case "Hard":
-                        depth = 15;
+                        depth = 3;
                         break;
                 }
             }
@@ -144,8 +144,8 @@ public class PieceController {
         }
         for (Move possibleMove : possibleMoves) {
             CheckersState checkersState = new CheckersState(currentCheckersState);
-            int eval = negaMax.negaMax(checkersState, depth, false, beta, alpha);
-            if (eval > alpha) {
+            int eval = negaMax.negaMax(checkersState, depth, true, alpha, beta);
+            if (eval >= alpha) {
                 alpha = eval;
                 bestMove = possibleMove;
             }

@@ -58,22 +58,28 @@ public class NegaMax {
         }
     }
 
-    public int negaMax(CheckersState checkersState, int depth, boolean isMaxPlayer, int alpha, int beta) {
+    public int negaMax(CheckersState checkersState, int depth, boolean isAIPlayer, int alpha, int beta) {
         if (depth == 0 || checkersState.isGameOver()) {
-            return checkersState.getStateEvaluation(isMaxPlayer ? maxPlayer : minPlayer);
+            return checkersState.getStateEvaluation(isAIPlayer ? maxPlayer : minPlayer);
         }
         CheckersState checkersStateCopy = new CheckersState(checkersState);
-        ArrayList<CheckersState> childStates = generateChildStates(checkersStateCopy, isMaxPlayer);
+        ArrayList<CheckersState> childStates = generateChildStates(checkersStateCopy, isAIPlayer);
+        int eval = Integer.MIN_VALUE;
         for (CheckersState childState : childStates) {
             CheckersState childStateCopy = new CheckersState(childState);
-            int eval = -negaMax(childStateCopy, depth - 1, !isMaxPlayer, -beta, -alpha);
-            if (eval >= beta) {
-                return eval;
-            }
-            if (eval > alpha) {
-                alpha = eval;
-            }
+//            int eval = -negaMax(childStateCopy, depth - 1, !isAIPlayer, -beta, -alpha);
+//            if (eval >= beta) {
+//                return eval;
+//            }
+//            if (eval > alpha) {
+//                alpha = eval;
+//            }
+            eval = Math.max(eval, -negaMax(checkersStateCopy, depth - 1, !isAIPlayer, -beta, -alpha));
+            alpha = Math.max(eval, alpha);
+            if (alpha > beta)
+                break;
         }
-        return alpha;
+        //return alpha;
+        return eval;
     }
 }
