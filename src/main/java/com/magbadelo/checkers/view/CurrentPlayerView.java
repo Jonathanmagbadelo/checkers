@@ -9,19 +9,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CurrentPlayerView extends VBox {
-
     private Circle piece;
     private String playerTurn;
     private String aiTurn;
     private String currentTurn;
-    private Label currentPlayer;
 
     public CurrentPlayerView(){
         this.playerTurn = "Players Turn!";
         this.aiTurn = "AI's Turn";
         this.piece = new Circle(37.5, Color.TRANSPARENT);
         this.currentTurn = playerTurn;
-        this.currentPlayer = new Label(playerTurn);
 
         setStyle("-fx-background-color: #975354;" +
                 "-fx-border-style: solid inside;" +
@@ -32,7 +29,7 @@ public class CurrentPlayerView extends VBox {
         setAlignment(Pos.CENTER);
         setSpacing(75);
 
-        getChildren().addAll(piece, currentPlayer);
+        getChildren().addAll(piece, new Label(playerTurn));
     }
 
     public void setPieceColor(String color, String stroke){
@@ -46,8 +43,8 @@ public class CurrentPlayerView extends VBox {
         getChildren().set(1, new Label(currentTurn));
     }
 
-    public void gameOver(){
-        getChildren().set(1, new Label("Game Over!"));
+    public void gameOver(String endGameMessage){
+        getChildren().set(1, new Label(endGameMessage));
     }
 
 }

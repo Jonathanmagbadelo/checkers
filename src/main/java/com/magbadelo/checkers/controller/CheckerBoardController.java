@@ -21,6 +21,7 @@ public class CheckerBoardController {
     private CheckersBoard checkersBoard;
     private PieceController pieceController;
     private CurrentPlayerView currentPlayerView;
+    private TileController tileController;
 
     @Value("${checkerboard.piece.fill.color.one}")
     private String pieceColorOne;
@@ -38,12 +39,17 @@ public class CheckerBoardController {
     private double pieceRadius;
 
     @Autowired
-    public CheckerBoardController(CheckerBoardView checkerBoardView, CheckersBoard checkersBoard, PieceController pieceController, CurrentPlayerView currentPlayerView) {
+    public CheckerBoardController(CheckerBoardView checkerBoardView, CheckersBoard checkersBoard, PieceController pieceController, CurrentPlayerView currentPlayerView, TileController tileController) {
         this.checkerBoardView = checkerBoardView;
         this.checkersBoard = checkersBoard;
         this.pieceController = pieceController;
         this.currentPlayerView = currentPlayerView;
+        this.tileController = tileController;
+        checkersBoard.getHumanPlayer().setPieceType(PieceType.BLACK);
+        checkersBoard.getAiPlayer().setPieceType(PieceType.RED);
+        checkerBoardView.getLeftVbox().getChildren().add(currentPlayerView);
         setHBoxEventHandles();
+        setTileViewHandles();
     }
 
     public CheckerBoardView getCheckerBoardView() {
@@ -52,21 +58,14 @@ public class CheckerBoardController {
 
     private void setHBoxEventHandles() {
         HBox hBox = getCheckerBoardView().getHBox();
-        hBox.getChildren().get(0).setOnMousePressed(event -> {
-            System.out.println("Working");
-            initialisePieces();
-        });
+        hBox.getChildren().get(0).setOnMousePressed(event -> initialisePieces());
+        hBox.getChildren().get(1).setOnMousePressed(event -> resetGame());
     }
 
     private void initialisePieces() {
-        checkersBoard.getHumanPlayer().setPieceType(PieceType.BLACK);
-        checkersBoard.getAiPlayer().setPieceType(PieceType.RED);
-        checkerBoardView.getLeftVbox().getChildren().add(currentPlayerView);
         currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor(), pieceStrokeTwo);
-        System.out.println(checkersBoard.getCurrentPlayer().getPieceType());
-        System.out.println(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), checkersBoard.getCurrentCheckersState()).size());
-        setTileViewHandles();
         setPieceViews();
+        tileController.showPossibleMoveTileViews(checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), checkersBoard.getCurrentCheckersState()));
     }
 
     private void setTileViewHandles() {
@@ -92,4 +91,15 @@ public class CheckerBoardController {
                     }
                 });
     }
+
+    private void resetGame() {
+        checkerBoardView.getBoard().getChildren().stream().filter(tile -> tile instanceof TileView).forEach(tile -> {
+            ((TileView) tile).getChildren().removeIf(piece -> piece instanceof PieceView);
+        });
+        checkersBoard.reset();
+        tileController.resetTileViewColors();
+        pieceController.reset();
+        System.out.println("Reset game!");
+    }
+
 }

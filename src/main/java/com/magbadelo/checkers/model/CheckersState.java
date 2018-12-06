@@ -55,14 +55,14 @@ public class CheckersState {
 
     public int getStateEvaluation(Player currentPlayer) {
         if (!isEndGame()) {
-            return normalStateEvalutation(currentPlayer);
+            return normalStateEvaluation(currentPlayer);
         }
 
         return endGameStateEvaluation(currentPlayer);
 
     }
 
-    private int normalStateEvalutation(Player currentPlayer) {
+    private int normalStateEvaluation(Player currentPlayer) {
         int score = 0;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {

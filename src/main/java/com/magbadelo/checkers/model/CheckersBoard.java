@@ -1,8 +1,6 @@
 package com.magbadelo.checkers.model;
 
-import com.magbadelo.checkers.CheckersApplication;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,23 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 public class CheckersBoard {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckersApplication.class);
     private Player humanPlayer;
     private Player aiPlayer;
     private Player currentPlayer;
 
-    //@Value("${checkerboard.num.rows}")
+    @Value("${checkerboard.num.rows}")
     private int numRows = 8;
 
-    //@Value("${checkerboard.num.cols}")
+    @Value("${checkerboard.num.cols}")
     private int numCols = 8;
 
     private CheckersState currentCheckersState;
 
+    @Autowired
     public CheckersBoard() {
         this.aiPlayer = new Player(true);
         this.humanPlayer = new Player(false);
@@ -58,6 +55,13 @@ public class CheckersBoard {
 
     public CheckersState getCurrentCheckersState() {
         return currentCheckersState;
+    }
+
+    public void reset(){
+        currentPlayer = getHumanPlayer();
+        this.currentCheckersState = new CheckersState(numRows, numCols);
+        initialise();
+        currentCheckersState.updateCurrentPieces();
     }
 
     private void initialise() {

@@ -4,6 +4,7 @@ import com.magbadelo.checkers.model.CheckersBoard;
 import com.magbadelo.checkers.model.CheckersState;
 import com.magbadelo.checkers.model.NegaMax;
 import com.magbadelo.checkers.model.Move;
+import com.magbadelo.checkers.view.CheckerBoardView;
 import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
@@ -32,8 +33,8 @@ public class PieceController {
     private PieceView draggingPieceView;
     private TileView sourceTileView;
     private CheckersBoard checkersBoard;
-    private GridPane board;
     private CurrentPlayerView currentPlayerView;
+    private TileController tileController;
     private boolean playerFinishedMove;
     private TextArea logArea;
     private CheckersState currentCheckersState;
@@ -47,10 +48,10 @@ public class PieceController {
     private String pieceStrokeTwo;
 
     @Autowired
-    public PieceController(CheckersBoard checkersBoard, GridPane board, CurrentPlayerView currentPlayerView, TextArea logArea, NegaMax minMax) {
+    public PieceController(CheckersBoard checkersBoard, CurrentPlayerView currentPlayerView, TextArea logArea, NegaMax minMax, TileController tileController) {
         this.checkersBoard = checkersBoard;
-        this.board = board;
         this.currentPlayerView = currentPlayerView;
+        this.tileController = tileController;
         this.playerFinishedMove = false;
         this.logArea = logArea;
         this.currentCheckersState = checkersBoard.getCurrentCheckersState();
@@ -89,12 +90,11 @@ public class PieceController {
             if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move, currentCheckersState)) {
                 if(!move.isCapturingMove() && !possibleJumpMoves.isEmpty()){
                     logArea.setText(logArea.getText() + "\n Player MUST capture!");
-                    showPossibleMoveTileViews(possibleJumpMoves);
+                    tileController.showPossibleMoveTileViews(possibleJumpMoves);
                 } else{
                     completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
                 }
             } else {
-                //logArea.setText(logArea.getText() + String.format("\n Move from %d,%d is invalid to %d,%d!", move.getSourceRow(), move.getSourceCol(), move.getTargetRow(), move.getTargetCol()));
                 logArea.setText(logArea.getText() + "\n" + move.getInvalidReason());
             }
             e.setDropCompleted(true);
@@ -133,11 +133,10 @@ public class PieceController {
     private void aiMove() {
         if (checkersBoard.getCurrentPlayer().isAIPlayer()) {
             List<Move> moves = checkersBoard.generateMoves(checkersBoard.getAiPlayer(), currentCheckersState);
-            //Move move = moves.get(new Random().nextInt(moves.size()));
             Move move = getNegaMaxMove(moves);
 
-            TileView sourceTileView = getTileView(move.getSourceRow(), move.getSourceCol());
-            TileView targetTileView = getTileView(move.getTargetRow(), move.getTargetCol());
+            TileView sourceTileView = tileController.getTileView(move.getSourceRow(), move.getSourceCol());
+            TileView targetTileView = tileController.getTileView(move.getTargetRow(), move.getTargetCol());
             PieceView pieceView = (PieceView) sourceTileView.getChildren().get(1);
 
             completePieceViewMove(move, sourceTileView, targetTileView, pieceView);
@@ -146,13 +145,8 @@ public class PieceController {
         }
     }
 
-    private TileView getTileView(int row, int col) {
-        int index = (row * 8) + col;
-        return (TileView) board.getChildren().get(index);
-    }
-
     private void capturePieceView(int row, int col) {
-        getTileView(row, col).getChildren().remove(1);
+        tileController.getTileView(row, col).getChildren().remove(1);
     }
 
     private void completePieceViewMove(Move move, TileView sourceTileView, TileView targetTileView, PieceView pieceView) {
@@ -169,21 +163,21 @@ public class PieceController {
                     //automaticaly do ai moves
                     //issue here stop recursion
                     Move nextMove = move.getPossibleJumpMoves().get(new Random().nextInt(move.getPossibleJumpMoves().size()));
-                    resetTileViewColors();
+                    tileController.resetTileViewColors();
                     if (!move.isCrowningMove()) {
-                        showPossibleMoveTileViews(move.getPossibleJumpMoves());
-                        FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
+                        tileController.showPossibleMoveTileViews(move.getPossibleJumpMoves());
+                        FxTimer.runLater(Duration.ofMillis(1500), () -> {
+                            completePieceViewMove(nextMove, tileController.getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), tileController.getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);});
                     }
                 } else {
                     //human does what it whats
                     if (!move.isCrowningMove()) {
                         logArea.setText(logArea.getText() + "\n Player MUST capture!");
-                        resetTileViewColors();
-                        showPossibleMoveTileViews(move.getPossibleJumpMoves());
+                        tileController.resetTileViewColors();
+                        tileController.showPossibleMoveTileViews(move.getPossibleJumpMoves());
                         playerFinishedMove = false;
                     }
                 }
-                System.out.println("We lit");
             } else if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
                 playerFinishedMove = true;
             }
@@ -195,20 +189,20 @@ public class PieceController {
         }
 
         if (!move.hasPossibleJumpMoves()) {
-            resetTileViewColors();
+            tileController.resetTileViewColors();
             if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
                 playerFinishedMove = true;
             }
         }
 
         if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
-            resetTileViewColors();
+            tileController.resetTileViewColors();
         }
     }
 
     private void switchPlayer() {
         if (checkersBoard.isGameOver()) {
-            currentPlayerView.gameOver();
+            currentPlayerView.gameOver("TBD");
         } else {
             checkersBoard.switchCurrentPlayer();
             String strokeColor = checkersBoard.getCurrentPlayer().getPieceType().toString().equals("Red") ? pieceStrokeOne : pieceStrokeTwo;
@@ -217,25 +211,16 @@ public class PieceController {
             if(!checkersBoard.getCurrentPlayer().isAIPlayer() && showPossibleMoves){
                 List<Move> possibleMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState);
                 List<Move> possibleJumpMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState).stream().filter(Move::isCapturingMove).collect(Collectors.toList());
-                showPossibleMoveTileViews(possibleJumpMoves.isEmpty() ? possibleMoves : possibleJumpMoves);
+                tileController.showPossibleMoveTileViews(possibleJumpMoves.isEmpty() ? possibleMoves : possibleJumpMoves);
             }
         }
 
     }
 
-    public void showPossibleMoveTileViews(List<Move> possibleMoves) {
-        possibleMoves.forEach(move -> {
-            TileView tileView = getTileView(move.getTargetRow(), move.getTargetCol());
-            Rectangle tile = ((Rectangle) tileView.getChildren().get(0));
-            tile.setFill(Color.GREENYELLOW);
-            tile.setOpacity(70);
-        });
+    public void reset(){
+        playerFinishedMove = false;
+        sourceTileView = null;
+        logArea.clear();
     }
 
-    public void resetTileViewColors() {
-        board.getChildren().stream()
-                .filter(node -> node instanceof TileView)
-                .filter(node -> ((Rectangle) (((TileView) node).getChildren().get(0))).getFill().equals(Color.GREENYELLOW))
-                .forEach(node -> ((Rectangle) (((TileView) node).getChildren().get(0))).setFill(Color.web("A85D5D")));
-    }
 }

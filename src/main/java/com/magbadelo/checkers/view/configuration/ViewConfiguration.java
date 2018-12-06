@@ -57,9 +57,9 @@ public class ViewConfiguration {
                 "-fx-border-width: 5;" +
                 "-fx-border-color: #5A3132;");
 
-        Button newGame = new Button("New Game");
+        Button start = new Button("Start");
 
-        newGame.setPrefSize(100, 20);
+        start.setPrefSize(100, 20);
 
         Button rules = new Button("Rules");
 
@@ -81,11 +81,10 @@ public class ViewConfiguration {
             rulePopUpBox.showAndWait();
         });
 
-        Button buttonProjected = new Button("Debug");
-        buttonProjected.setOnMousePressed(event -> System.out.println("Debugging"));
-        buttonProjected.setPrefSize(100, 20);
+        Button reset = new Button("Reset");
+        reset.setPrefSize(100, 20);
 
-        hbox.getChildren().addAll(newGame, buttonProjected, rules);
+        hbox.getChildren().addAll(start, reset, rules);
         hbox.getChildren().forEach(node -> node.setStyle("-fx-background-color: #FFCC66;" +
                 "-fx-border-style: solid outside;" +
                 "-fx-border-width: 2;" +

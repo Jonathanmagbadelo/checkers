@@ -3,8 +3,6 @@ package com.magbadelo.checkers;
 import com.magbadelo.checkers.controller.CheckerBoardController;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +16,6 @@ import javax.annotation.PostConstruct;
 public class CheckersApplication extends Application {
     private ConfigurableApplicationContext springContext;
     private Parent rootNode;
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckersApplication.class);
 
     @Autowired
     CheckerBoardController checkerBoardController;
@@ -36,7 +33,6 @@ public class CheckersApplication extends Application {
             primaryStage.show();
 
         });
-        LOGGER.info("Loading Checkers application.....");
     }
 
     public static void main(String[] args) {
