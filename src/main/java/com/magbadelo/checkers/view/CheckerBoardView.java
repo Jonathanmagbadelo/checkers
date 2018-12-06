@@ -14,15 +14,17 @@ public class CheckerBoardView {
     private VBox leftVbox;
     private VBox rightVbox;
     private ToggleGroup difficulty;
+    private ToggleButton toggleButton;
 
     @Autowired
-    public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox, TextArea logArea, Label logLabel, ToggleGroup difficulty) {
+    public CheckerBoardView(GridPane board, HBox hBox, @Qualifier("leftVbox") VBox leftVbox, @Qualifier("rightVbox") VBox rightVbox, TextArea logArea, Label logLabel, ToggleGroup difficulty, ToggleButton toggleButton) {
         this.board = board;
         this.hBox = hBox;
         this.leftVbox = leftVbox;
         this.rightVbox = rightVbox;
         this.difficulty = difficulty;
-        difficulty.getToggles().forEach(toggle -> hBox.getChildren().add((RadioButton) toggle));
+        difficulty.getToggles().forEach(toggle -> hBox.getChildren().add((ToggleButton) toggle));
+        hBox.getChildren().add(toggleButton);
         rightVbox.getChildren().addAll(logLabel, logArea);
     }
 
@@ -49,5 +51,9 @@ public class CheckerBoardView {
 
     public ToggleGroup getDifficulty() {
         return difficulty;
+    }
+
+    public ToggleButton getToggleButton(){
+        return toggleButton;
     }
 }

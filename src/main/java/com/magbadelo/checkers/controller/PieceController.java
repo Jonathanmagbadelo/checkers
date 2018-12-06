@@ -4,19 +4,18 @@ import com.magbadelo.checkers.model.CheckersBoard;
 import com.magbadelo.checkers.model.CheckersState;
 import com.magbadelo.checkers.model.NegaMax;
 import com.magbadelo.checkers.model.Move;
-import com.magbadelo.checkers.view.CheckerBoardView;
 import com.magbadelo.checkers.view.CurrentPlayerView;
 import com.magbadelo.checkers.view.PieceView;
 import com.magbadelo.checkers.view.TileView;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import org.reactfx.util.FxTimer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +37,9 @@ public class PieceController {
     private boolean playerFinishedMove;
     private TextArea logArea;
     private CheckersState currentCheckersState;
-    private NegaMax minMax;
-    private boolean showPossibleMoves = true;
+    private NegaMax negaMax;
+    private int depth;
+    private boolean showHints;
 
     @Value("${checkerboard.piece.stroke.color.one}")
     private String pieceStrokeOne;
@@ -48,14 +48,38 @@ public class PieceController {
     private String pieceStrokeTwo;
 
     @Autowired
-    public PieceController(CheckersBoard checkersBoard, CurrentPlayerView currentPlayerView, TextArea logArea, NegaMax minMax, TileController tileController) {
+    public PieceController(CheckersBoard checkersBoard, CurrentPlayerView currentPlayerView, TextArea logArea, NegaMax minMax, TileController tileController, ToggleButton toggleButton, ToggleGroup difficulty) {
         this.checkersBoard = checkersBoard;
         this.currentPlayerView = currentPlayerView;
         this.tileController = tileController;
         this.playerFinishedMove = false;
         this.logArea = logArea;
         this.currentCheckersState = checkersBoard.getCurrentCheckersState();
-        this.minMax = minMax;
+        this.negaMax = minMax;
+        this.showHints = false;
+        this.depth = 5;
+        toggleButton.setOnMousePressed(event -> showHints = !showHints);
+        difficultyListener(difficulty);
+    }
+
+    private void difficultyListener(ToggleGroup difficulty) {
+        difficulty.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
+            if (difficulty.getSelectedToggle() != null) {
+                ToggleButton button = (ToggleButton) difficulty.getSelectedToggle();
+                switch (button.getText()) {
+                    case "Easy":
+                        depth = 1;
+                        break;
+                    case "Medium":
+                        depth = 7;
+                        System.out.println("HAI");
+                        break;
+                    case "Hard":
+                        depth = 15;
+                        break;
+                }
+            }
+        });
     }
 
     public void dragButton(PieceView pieceView) {
@@ -88,10 +112,10 @@ public class PieceController {
             Move move = new Move(sourceTileView.getRow(), sourceTileView.getCol(), targetTileView.getRow(), targetTileView.getCol());
             List<Move> possibleJumpMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState).stream().filter(Move::isCapturingMove).collect(Collectors.toList());
             if (db.hasContent(pieceViewFormat) && checkersBoard.isMoveValid(move, currentCheckersState)) {
-                if(!move.isCapturingMove() && !possibleJumpMoves.isEmpty()){
+                if (!move.isCapturingMove() && !possibleJumpMoves.isEmpty()) {
                     logArea.setText(logArea.getText() + "\n Player MUST capture!");
                     tileController.showPossibleMoveTileViews(possibleJumpMoves);
-                } else{
+                } else {
                     completePieceViewMove(move, sourceTileView, targetTileView, draggingPieceView);
                 }
             } else {
@@ -115,13 +139,13 @@ public class PieceController {
         int beta = Integer.MAX_VALUE;
         Move bestMove = possibleMoves.get(0);
         List<Move> capturingMoves = possibleMoves.stream().filter(Move::isCapturingMove).collect(Collectors.toList());
-        if(!capturingMoves.isEmpty()){
+        if (!capturingMoves.isEmpty()) {
             possibleMoves = capturingMoves;
         }
         for (Move possibleMove : possibleMoves) {
             CheckersState checkersState = new CheckersState(currentCheckersState);
-            int eval = minMax.negaMax(checkersState, 11, false, beta, alpha);
-            if( eval > alpha){
+            int eval = negaMax.negaMax(checkersState, depth, false, beta, alpha);
+            if (eval > alpha) {
                 alpha = eval;
                 bestMove = possibleMove;
             }
@@ -167,7 +191,8 @@ public class PieceController {
                     if (!move.isCrowningMove()) {
                         tileController.showPossibleMoveTileViews(move.getPossibleJumpMoves());
                         FxTimer.runLater(Duration.ofMillis(1500), () -> {
-                            completePieceViewMove(nextMove, tileController.getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), tileController.getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);});
+                            completePieceViewMove(nextMove, tileController.getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), tileController.getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView);
+                        });
                     }
                 } else {
                     //human does what it whats
@@ -195,7 +220,7 @@ public class PieceController {
             }
         }
 
-        if(!checkersBoard.getCurrentPlayer().isAIPlayer()){
+        if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
             tileController.resetTileViewColors();
         }
     }
@@ -208,7 +233,7 @@ public class PieceController {
             String strokeColor = checkersBoard.getCurrentPlayer().getPieceType().toString().equals("Red") ? pieceStrokeOne : pieceStrokeTwo;
             currentPlayerView.setPieceColor(checkersBoard.getCurrentPlayer().getPieceType().getColor(), strokeColor);
             currentPlayerView.nextTurn();
-            if(!checkersBoard.getCurrentPlayer().isAIPlayer() && showPossibleMoves){
+            if (!checkersBoard.getCurrentPlayer().isAIPlayer() && showHints) {
                 List<Move> possibleMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState);
                 List<Move> possibleJumpMoves = checkersBoard.generateMoves(checkersBoard.getCurrentPlayer(), currentCheckersState).stream().filter(Move::isCapturingMove).collect(Collectors.toList());
                 tileController.showPossibleMoveTileViews(possibleJumpMoves.isEmpty() ? possibleMoves : possibleJumpMoves);
@@ -217,7 +242,7 @@ public class PieceController {
 
     }
 
-    public void reset(){
+    public void reset() {
         playerFinishedMove = false;
         sourceTileView = null;
         currentCheckersState = checkersBoard.getCurrentCheckersState();

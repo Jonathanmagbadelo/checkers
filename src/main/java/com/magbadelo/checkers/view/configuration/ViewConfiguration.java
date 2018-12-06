@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import org.controlsfx.control.ToggleSwitch;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -146,28 +147,24 @@ public class ViewConfiguration {
     public ToggleGroup difficulty() {
         final ToggleGroup group = new ToggleGroup();
 
-        RadioButton rb1 = new RadioButton("Easy");
+        ToggleButton rb1 = new ToggleButton("Easy");
         rb1.setToggleGroup(group);
         rb1.setSelected(true);
 
-        RadioButton rb2 = new RadioButton("Medium");
+        ToggleButton rb2 = new ToggleButton("Medium");
         rb2.setToggleGroup(group);
 
-        RadioButton rb3 = new RadioButton("Hard");
+        ToggleButton rb3 = new ToggleButton("Hard");
         rb3.setToggleGroup(group);
 
-        group.getToggles().forEach(toggle -> {
-            ((RadioButton) toggle).getStyleClass().add("red-radio-button");
-            ((RadioButton) toggle).setStyle(".red-radio-button .dot{" +
-                    "-fx-mark-highlight-color: #5A3132 ;" +
-                    "-fx-mark-color: #7D4544 ;" +
-                    "-fx-focus-color: #5A3132 ;}" +
-                    ".red-radio-button .radio{" +
-                    " -fx-border-color: #7D4544 ;" +
-                    " -fx-border-width: 3 ;}");
-            ((RadioButton) toggle).setAlignment(Pos.CENTER_RIGHT);
-        });
         return group;
+    }
+
+    @Bean
+    public ToggleButton toggleSwitch() {
+        ToggleButton toggleButton = new ToggleButton("Show Hints?");
+        toggleButton.setSelected(false);
+        return toggleButton;
     }
 
 }
