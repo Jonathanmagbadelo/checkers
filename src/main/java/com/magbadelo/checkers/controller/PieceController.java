@@ -118,7 +118,7 @@ public class PieceController {
         }
         for (Move possibleMove : possibleMoves) {
             CheckersState checkersState = new CheckersState(currentCheckersState);
-            int eval = minMax.negaMax(checkersState, 30, false, beta, alpha);
+            int eval = minMax.negaMax(checkersState, 11, false, beta, alpha);
             if( eval > alpha){
                 alpha = eval;
                 bestMove = possibleMove;
@@ -201,7 +201,7 @@ public class PieceController {
     }
 
     private void switchPlayer() {
-        if (currentCheckersState.isGameOver()) {
+        if (checkersBoard.isGameOver()) {
             currentPlayerView.gameOver();
         } else {
             checkersBoard.switchCurrentPlayer();

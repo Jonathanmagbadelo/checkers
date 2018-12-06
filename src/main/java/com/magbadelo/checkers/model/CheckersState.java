@@ -6,13 +6,11 @@ import java.util.stream.IntStream;
 
 public class CheckersState {
     private Piece[][] boardState;
-    private ArrayList<CheckersState> childStates;
     private List<Piece> currentBlackPieces;
     private List<Piece> currentRedPieces;
 
     public CheckersState(int rows, int cols) {
         this.boardState = new Piece[rows][cols];
-        this.childStates = new ArrayList<>();
         this.currentBlackPieces = new ArrayList<>();
         this.currentRedPieces = new ArrayList<>();
     }
@@ -29,7 +27,6 @@ public class CheckersState {
                         checkersState.getPiece(row, col).getCol());
             }
         }));
-        this.childStates = new ArrayList<>();
         this.currentBlackPieces = new ArrayList<>();
         this.currentRedPieces = new ArrayList<>();
         updateCurrentPieces();
@@ -71,10 +68,10 @@ public class CheckersState {
             for (int col = 0; col < 8; col++) {
                 if (hasPiece(row, col) && getPiece(row, col).getPieceType().equals(currentPlayer.getPieceType())) {
                     if (getPiece(row, col).isKing()) {
-                        score += 10;
+                        score += 20;
                     } else {
                         if (row > 3) {
-                            score += 7;
+                            score += 10;
                         } else {
                             score += 5;
                         }
@@ -91,14 +88,15 @@ public class CheckersState {
         List<Piece> opponentPieces = currentPlayerPieces == currentRedPieces ? currentBlackPieces : currentRedPieces;
         double totalDistance = 0;
         for (Piece piece : currentPlayerPieces) {
-             
-            for (Piece opponentPiece : opponentPieces) {
-                totalDistance += Math.hypot(piece.getRow() - opponentPiece.getRow(), piece.getCol() - opponentPiece.getCol());
+            if (piece.isKing()) {
+                for (Piece opponentPiece : opponentPieces) {
+                    totalDistance += Math.hypot(piece.getRow() - opponentPiece.getRow(), piece.getCol() - opponentPiece.getCol());
+                }
             }
 
         }
 
-        return currentPlayerPieces.size() > opponentPieces.size() ? (int) (1 / totalDistance) : (int) totalDistance;
+        return currentPlayerPieces.size() > opponentPieces.size() ? (int) (1000.0 * (1.0 / totalDistance)) : (int) totalDistance;
     }
 
     public boolean isGameOver() {
@@ -123,20 +121,10 @@ public class CheckersState {
         }
     }
 
-    public ArrayList<CheckersState> getChildStates() {
-        return childStates;
-    }
-
-    public void setChildStates(ArrayList<CheckersState> childStates) {
-        this.childStates = childStates;
-    }
-
     public boolean isEndGame() {
         updateCurrentPieces();
-        //long blackKingCount = currentBlackPieces.stream().filter(Piece::isKing).count();
-        //long redKingCount = currentRedPieces.stream().filter(Piece::isKing).count();
-        //return blackKingCount == currentBlackPieces.size() && redKingCount == currentRedPieces.size();
-        return currentBlackPieces.size() + currentRedPieces.size() < 15;
+        long blackKingCount = currentBlackPieces.stream().filter(Piece::isKing).count();
+        long redKingCount = currentRedPieces.stream().filter(Piece::isKing).count();
+        return blackKingCount == currentBlackPieces.size() && redKingCount == currentRedPieces.size();
     }
-
 }

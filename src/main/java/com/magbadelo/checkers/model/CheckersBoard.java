@@ -186,7 +186,7 @@ public class CheckersBoard {
 
     public boolean isGameOver(){
         //checks if pieces are gone
-        List<Move> possibleMoves = generateMoves(getCurrentPlayer(), getCurrentCheckersState());
+        List<Move> possibleMoves = generateMoves(getNextPlayer(), getCurrentCheckersState());
         return getCurrentCheckersState().isGameOver() || Objects.isNull(possibleMoves);
     }
 

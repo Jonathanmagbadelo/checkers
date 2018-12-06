@@ -60,12 +60,10 @@ public class ViewConfiguration {
         Button newGame = new Button("New Game");
 
         newGame.setPrefSize(100, 20);
-        //newGame.setStyle("-fx-background-color: #FFCC66;");
 
         Button rules = new Button("Rules");
 
         rules.setPrefSize(100, 20);
-        //rules.setStyle("-fx-background-color: #FFCC66;");
         rules.setOnMousePressed(event -> {
             Alert rulePopUpBox = new Alert(Alert.AlertType.INFORMATION);
             rulePopUpBox.setTitle("Rules");
@@ -86,8 +84,6 @@ public class ViewConfiguration {
         Button buttonProjected = new Button("Debug");
         buttonProjected.setOnMousePressed(event -> System.out.println("Debugging"));
         buttonProjected.setPrefSize(100, 20);
-        //buttonProjected.setStyle("-fx-background-color: #FFCC66;");
-
 
         hbox.getChildren().addAll(newGame, buttonProjected, rules);
         hbox.getChildren().forEach(node -> node.setStyle("-fx-background-color: #FFCC66;" +
@@ -138,18 +134,12 @@ public class ViewConfiguration {
                 ".text-area .scroll-pane .content{" +
                 "    -fx-background-color: transparent;}");
         logArea.setEditable(false);
-        //logArea.setFocusTraversable(false);
-        //logArea.setMouseTransparent(true);
         return logArea;
     }
 
     @Bean
     public Label logLabel() {
         Label logLabel = new Label("Game Log");
-        logLabel.setStyle(".label {\n" +
-                "    -fx-font-size: 100px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-text-fill: #333333);\n}");
         return logLabel;
     }
 

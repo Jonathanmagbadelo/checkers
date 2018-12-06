@@ -46,7 +46,6 @@ public class NegaMax {
         return childStates;
     }
 
-    //move defo has possible jump moves
     public void traverseJumpMoves(Move move, CheckersState checkersState, ArrayList<CheckersState> childStates) {
         if (!move.hasPossibleJumpMoves()) {
             childStates.add(checkersState);
