@@ -109,6 +109,7 @@ public class CheckerBoardController {
                 });
     }
 
+    //This method resets the model and view to a beginning state
     private void resetGame() {
         checkerBoardView.getBoard().getChildren().stream().filter(tile -> tile instanceof TileView).forEach(tile -> ((TileView) tile).getChildren().removeIf(piece -> piece instanceof PieceView));
         checkersBoard.reset();

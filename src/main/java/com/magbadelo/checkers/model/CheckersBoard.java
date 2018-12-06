@@ -87,7 +87,7 @@ public class CheckersBoard {
     }
 
     /**
-     * Reset.
+     * Reset the game state to an original game state
      */
     public void reset(){
         currentPlayer = getHumanPlayer();
@@ -96,6 +96,7 @@ public class CheckersBoard {
         currentCheckersState.updateCurrentPieces();
     }
 
+    //Initialise the pieces for the gane
     private void initialise() {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
@@ -121,7 +122,7 @@ public class CheckersBoard {
     }
 
     /**
-     * Is move valid boolean.
+     * This method checks the validity of a move compared to some given state.
      *
      * @param move          the move
      * @param checkersState the checkers state
@@ -129,8 +130,11 @@ public class CheckersBoard {
      */
     public boolean isMoveValid(Move move, CheckersState checkersState) {
         Piece piece = checkersState.getPiece(move.getSourceRow(), move.getSourceCol());
+
+        //if the tile is a light tile, automatically reject the move
         if (!isLightTile(move.getTargetRow(), move.getTargetCol())) {
 
+            //check if it is a normal move for the given piece type
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 1 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir()) || piece.isKing())) {
                 if (!checkersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
                     move.setCrowningMove(isCrowningMove(piece, move.getTargetRow()));
@@ -139,6 +143,7 @@ public class CheckersBoard {
 
             }
 
+            //check if it is a capturing move with an opposing piece inbetween the source and target tile
             if (Math.abs(move.getTargetCol() - move.getSourceCol()) == 2 && ((move.getTargetRow() - move.getSourceRow() == piece.getPieceType().getMoveDir() * 2) || piece.isKing())) {
                 if (checkersState.hasPiece(move.getMiddleRow(), move.getMiddleCol()) && checkersState.getPiece(move.getMiddleRow(), move.getMiddleCol()).getPieceType() != piece.getPieceType()) {
                     if (!checkersState.hasPiece(move.getTargetRow(), move.getTargetCol())) {
@@ -157,7 +162,7 @@ public class CheckersBoard {
 
         return false;
     }
-
+    //generate reason if a move didn't satisfy the requirements in the isMoveValid method.
     private void setInvalidMoveReason(Move move) {
         if (move.getTargetRow() - move.getSourceRow() > -1) {
             move.setInvalidReason("Pawns can only move forward");
@@ -176,13 +181,12 @@ public class CheckersBoard {
     }
 
     /**
-     * Generate moves list.
+     * Generates a list of possible moves for a player in that given state.
      *
      * @param player        the player
      * @param checkersState the checkers state
      * @return the list
      */
-//successor function
     public List<Move> generateMoves(Player player, CheckersState checkersState) {
         int direction = player.getPieceType().getMoveDir();
         List<Move> everyMove = new ArrayList<>();
@@ -212,7 +216,7 @@ public class CheckersBoard {
     }
 
     /**
-     * Complete move.
+     * Complete move and update current board state
      *
      * @param move          the move
      * @param checkersState the checkers state

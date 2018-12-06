@@ -28,10 +28,13 @@ public class NegaMax {
         this.minPlayer = checkersBoard.getHumanPlayer();
     }
 
+    //A helper function to help generate child checkerstates from a given checkerstate, this is done in order to create the game tree required for negamax
     private ArrayList<CheckersState> generateChildStates(CheckersState checkersState, boolean isMaxPlayer) {
+        //get all possible moves from a given checkerstate and player
         List<Move> possibleMoves = checkersBoard.generateMoves(isMaxPlayer ? maxPlayer : minPlayer, checkersState);
         ArrayList<CheckersState> childStates = new ArrayList<>();
 
+        //generates the checkerstates for all the possible moves
         for (Move move : possibleMoves) {
 
             if (!move.isCapturingMove()) {
@@ -52,6 +55,7 @@ public class NegaMax {
         return childStates;
     }
 
+    //jump moves can happen multiple times within a single time, this function helps to create the checkertates from those jump moves recursively
     private void traverseJumpMoves(Move move, CheckersState checkersState, ArrayList<CheckersState> childStates) {
         if (!move.hasPossibleJumpMoves()) {
             childStates.add(checkersState);

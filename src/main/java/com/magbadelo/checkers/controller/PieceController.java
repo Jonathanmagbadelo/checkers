@@ -76,6 +76,7 @@ public class PieceController {
         difficultyListener(difficulty);
     }
 
+    //Sets the difficulty by listening to the three different user toggles which map to a depth number for negamax
     private void difficultyListener(ToggleGroup difficulty) {
         difficulty.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
             if (difficulty.getSelectedToggle() != null) {
@@ -157,11 +158,20 @@ public class PieceController {
         });
     }
 
+        /**
+     * Negamax
+     *
+         * This method uses the negamax class to get a move choice for the AI player, during the search
+         * it keeps track of what the best score and move is.
+     * @param possibleMoves the different possible moves from a given state
+     */
     private Move getNegaMaxMove(List<Move> possibleMoves) {
+        //set alpha beta values
         double alpha = Integer.MIN_VALUE;
         double beta = Integer.MAX_VALUE;
         Move bestMove = possibleMoves.get(0);
         List<Move> capturingMoves = possibleMoves.stream().filter(Move::isCapturingMove).collect(Collectors.toList());
+        //if their are possible capturing moves we only care about their sub branches in the game tree
         if (!capturingMoves.isEmpty()) {
             possibleMoves = capturingMoves;
         }
@@ -173,7 +183,6 @@ public class PieceController {
                 bestMove = possibleMove;
             }
         }
-        System.out.println("Best move score is " + alpha);
         return bestMove;
     }
 
@@ -196,6 +205,7 @@ public class PieceController {
         tileController.getTileView(row, col).getChildren().remove(1);
     }
 
+    //This class is only called with a valid move object as it updates the game view
     private void completePieceViewMove(Move move, TileView sourceTileView, TileView targetTileView, PieceView pieceView) {
         checkersBoard.completeMove(move, currentCheckersState);
         sourceTileView.getChildren().remove(pieceView);
@@ -215,6 +225,7 @@ public class PieceController {
                         FxTimer.runLater(Duration.ofMillis(1500), () -> completePieceViewMove(nextMove, tileController.getTileView(nextMove.getSourceRow(), nextMove.getSourceCol()), tileController.getTileView(nextMove.getTargetRow(), nextMove.getTargetCol()), pieceView));
                     }
                 } else {
+                    //players must jump when they have the opportunity to
                     if (!move.isCrowningMove()) {
                         logArea.setText(logArea.getText() + "\n Player MUST capture!");
                         tileController.resetTileViewColors();
@@ -227,11 +238,13 @@ public class PieceController {
             }
         }
 
+        //if the move was a crowning move, update the pieceView to become a king
         if (move.isCrowningMove()) {
             pieceView.crown();
             logArea.setText(logArea.getText() + String.format("\n %s piece at %d,%d is now a king", checkersBoard.getCurrentPlayer().getPieceType().toString(), move.getTargetRow(), move.getTargetCol()));
         }
 
+        //if the player has possible jump moves, then their turn is not finished
         if (!move.hasPossibleJumpMoves()) {
             tileController.resetTileViewColors();
             if (!checkersBoard.getCurrentPlayer().isAIPlayer()) {
